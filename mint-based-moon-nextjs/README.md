@@ -1,6 +1,6 @@
-# Mint Based Moon
+# Mint Based Moon NFT Frame
 
-Welcome to the Based Moon mint frame! This frame allows you to mint an arbitrary amount of Based Moon NFTs (on Base) and calls the Based Moon smart contract directly to perform minting from within the frame.
+Welcome to the Based Moon mint frame! This transaction-based frame allows you to mint an arbitrary amount of Based Moon NFTs (on Base) and calls the Based Moon smart contract directly to perform minting from within the frame.
 
 This frame code can serve as an easy template for anybody to build their own NFT minting frame off of.
 
@@ -28,7 +28,7 @@ To use the frame locally, visit `http://localhost:3000/api/dev`
 ### Deployment
 
 1. Fork this repo
-2. Sign up or sign into Vercel: https://vercel.com
+2. Sign up for Vercel: https://vercel.com
 3. Create a new project on vercel and point the project to the `mint-based-moon-nextjs` directory in your fork. Vercel should automatically detect that this is a NextJS project
 4. Follow Vercel's remaining steps to deploy
 5. After deploying, Vercel will generate a link for your hosted site (frame). The frame url is url vercel generates with `/api` appended to the end. For example, the URL to a frame would look like the following: `http://some-link.vercel.app/api`
