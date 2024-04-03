@@ -32,7 +32,7 @@ app.transaction("/mint", (c) => {
   const { inputText } = c;
   const amtToMint = parseInt(inputText || "1") || 1;
 
-  const PRICE = 0.001;
+  const price = 0.001;
 
   // Contract transaction response.
   return c.contract({
@@ -41,7 +41,7 @@ app.transaction("/mint", (c) => {
     functionName: "mintPublic",
     args: [amtToMint],
     to: CONTRACT_ADDRESS,
-    value: parseEther((PRICE * amtToMint).toString()),
+    value: parseEther((price * amtToMint).toString()),
   });
 });
 
