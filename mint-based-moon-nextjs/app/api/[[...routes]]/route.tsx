@@ -11,11 +11,11 @@ const IS_TESTNETS = false;
 const CONTRACT_ADDRESS = IS_TESTNETS
   ? "0xB86C967684dF99fb5De26dFEBba81ff5F83D99F1"
   : "0x80ad4e5c5ae9d6c6bff364b1e672b5e144751e92";
-
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 
+// UI
 const TITLE = "Mint an onchain Based Moon NFT";
 const BACKGROUND_IMG_SRC = "/assets/moon.png";
 const DESCRIPTION =

@@ -1,5 +1,11 @@
 # Mint Based Moon
 
+Welcome to the Based Moon mint frame! This frame allows you to mint an arbitrary amount of Based Moon NFTs (on Base) and calls the Based Moon smart contract directly to perform minting from within the frame.
+
+This frame code can serve as an easy template for anybody to build their own NFT minting frame off of.
+
+The mint closes April 3, 2024, after which you can find the onchain Based Moon collection on OpenSea: https://opensea.io/collection/based-moon-nft
+
 ## Quickstart
 
 ### Set up
@@ -52,9 +58,9 @@ To use the frame locally, visit `http://localhost:3000/api/dev`
 
 ### UI
 
-1. Update the `<img src="..." />` in `route.tsx` to point to your image. You can add your image to the `public/assets/` directory
-2. Update the title in `route.tsx` with the name of the NFT that users will mint
-3. Update the description in `route.tsx` with any additional information about the NFT
+1. Update the `TITLE` in `route.tsx` with the call to action
+2. Update the `DESCRIPTION` in `route.tsx` with any additional information about the NFT
+3. Update the `IMG_SRC` in `route.tsx` to point to your image. You can add your image to the `public/assets/` directory.
 
 ### Transaction-related fields
 
