@@ -16,6 +16,11 @@ const CONTRACT_ADDRESS = IS_TESTNETS
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 
+const TITLE = "Mint an onchain Based Moon NFT";
+const BACKGROUND_IMG_SRC = "/assets/moon.png";
+const DESCRIPTION =
+  "Based Moons are onchain interactive moon NFTs with art updating in real-time to closely reflect the phase of the real world moon";
+
 const app = new Frog({
   assetsPath: "/",
   basePath: "/api",
@@ -41,7 +46,7 @@ app.transaction("/mint", (c) => {
 });
 
 app.frame("/", (c) => {
-  const { buttonValue, inputText, status } = c;
+  const { status } = c;
   return c.res({
     image: (
       <div
@@ -62,7 +67,7 @@ app.frame("/", (c) => {
         }}
       >
         <img
-          src="/assets/moon.png"
+          src={BACKGROUND_IMG_SRC}
           style={{ position: "absolute", width: 1600 }}
         />
         <div
@@ -79,7 +84,7 @@ app.frame("/", (c) => {
             textAlign: "center",
           }}
         >
-          Mint an onchain Based Moon NFT
+          {TITLE}
         </div>
         <br />
         <div
@@ -95,8 +100,7 @@ app.frame("/", (c) => {
             textAlign: "center",
           }}
         >
-          Based Moons are onchain interactive moon NFTs with art updating in
-          real-time to closely reflect the phase of the real world moon
+          {DESCRIPTION}
         </div>
       </div>
     ),
