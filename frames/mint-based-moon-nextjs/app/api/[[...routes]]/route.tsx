@@ -16,7 +16,7 @@ const CONTRACT_ADDRESS = IS_TESTNETS
 const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 
 // UI
-const TITLE = "Mint an onchain Based Moon NFT";
+const TITLE = "Mint whatever Aspyn cooks next";
 const BACKGROUND_IMG_SRC = "/assets/moon.png";
 const DESCRIPTION =
   "Based Moons are onchain interactive moon NFTs with art updating in real-time to closely reflect the phase of the real world moon";
