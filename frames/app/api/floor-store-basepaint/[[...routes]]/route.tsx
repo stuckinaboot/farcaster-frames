@@ -51,12 +51,8 @@ const app = new Frog({
 });
 
 app.transaction("/buy", async (c) => {
-  console.log("wut");
-
   try {
-    console.log("GETTING!");
     const floorListing = await getFloorListing(SLUG);
-    console.log("GOT BEST LISTING!");
 
     const listing = {
       hash: floorListing.order_hash,
@@ -65,14 +61,15 @@ app.transaction("/buy", async (c) => {
     };
     const fulfiller = { address: c.address };
 
-    console.log("Getting data!");
     const data = await sdk.generate_listing_fulfillment_data_v2({
       listing,
       fulfiller,
     });
-    console.log("Got data!");
     const fulfillmentData = data.data.fulfillment_data;
-    console.log("FINAL DATA!", fulfillmentData.transaction.input_data);
+    const amt = parseInt(
+      floorListing.protocol_data.parameters.offer[0].startAmount
+    );
+    const value = fulfillmentData.transaction.value / amt;
 
     return c.contract({
       abi: abi,
@@ -80,22 +77,21 @@ app.transaction("/buy", async (c) => {
       args: [fulfillmentData.transaction.input_data.parameters],
       chainId: CHAIN,
       to: SEAPORT_PROTOCOL_ADDRESS,
-      value: fulfillmentData.transaction.value,
+      value: BigInt(value),
     });
   } catch (e) {
-    console.log(e);
     throw new Error("Failed to purchase");
   }
 });
 
 app.frame("/", async (c) => {
-  console.log("LOAD FRAME");
   const { status } = c;
 
   const floorListing = await getFloorListing(SLUG);
-  const price = floorListing?.price?.current?.value;
+  const quantity = +floorListing.protocol_data.parameters.offer[0].startAmount;
+  const price = floorListing?.price?.current?.value / quantity;
   const currency = floorListing?.price?.current?.currency;
-  const parsedPrice = formatEther(price);
+  const parsedPrice = formatEther(BigInt(price));
 
   const firstOfferItem = floorListing.protocol_data.parameters.offer[0];
   const { token, identifierOrCriteria } = firstOfferItem;
