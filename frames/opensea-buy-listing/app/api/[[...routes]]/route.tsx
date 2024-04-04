@@ -11,13 +11,11 @@ import { abi } from "./abi.ts";
 const sdk = api("@opensea/v2.0#27kiuuluk3ys90");
 sdk.server("https://api.opensea.io");
 
-console.log("KEY!", process.env.OS_API_KEY);
 sdk.auth(process.env.OS_API_KEY);
 
+const SEAPORT_PROTOCOL_ADDRESS = "0x0000000000000068f116a894984e2db1123eb395";
+
 const IS_TESTNETS = false;
-const CONTRACT_ADDRESS = IS_TESTNETS
-  ? "0xB86C967684dF99fb5De26dFEBba81ff5F83D99F1"
-  : "0x80ad4e5c5ae9d6c6bff364b1e672b5e144751e92";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN_NAME = "base";
@@ -27,9 +25,6 @@ const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 const SLUG = "basepaint";
 const COLLECTION_NAME = "BasePaint";
 const TITLE = `Floor Store: ${COLLECTION_NAME}`;
-const BACKGROUND_IMG_SRC = "/assets/moon.png";
-const DESCRIPTION =
-  "Based Moons are onchain interactive moon NFTs with art updating in real-time to closely reflect the phase of the real world moon";
 
 async function getFloorListing(slug: string) {
   const bestListings = await sdk.get_best_listings_on_collection_v2({
@@ -58,10 +53,11 @@ const app = new Frog({
 app.transaction("/mint", async (c) => {
   const floorListing = await getFloorListing(SLUG);
 
-  const hash = floorListing.order_hash;
-  const chain = CHAIN_NAME;
-  const protocol = "0x0000000000000068f116a894984e2db1123eb395";
-  const listing = { hash, chain, protocol };
+  const listing = {
+    hash: floorListing.order_hash,
+    chain: CHAIN_NAME,
+    protocol: SEAPORT_PROTOCOL_ADDRESS,
+  };
   const fulfiller = { address: c.address };
 
   try {
@@ -70,41 +66,18 @@ app.transaction("/mint", async (c) => {
       fulfiller,
     });
     const fulfillmentData = data.data.fulfillment_data;
-    console.log(
-      "DATA!"
-      // fulfillmentData,
-      // fulfillmentData.transaction.input_data.
-    );
 
-    console.log("HIT ME!", fulfillmentData.transaction.input_data.parameters);
-    const encoded = encodeFunctionData({
-      abi: abi,
-      functionName: "fulfillBasicOrder_efficient_6GL6yc",
-      args: [fulfillmentData.transaction.input_data.parameters],
-    });
-
-    console.log("WOAH!!", encoded);
-
-    // Contract transaction response.
     return c.contract({
       abi: abi,
       functionName: "fulfillBasicOrder_efficient_6GL6yc",
       args: [fulfillmentData.transaction.input_data.parameters],
       chainId: CHAIN,
-      to: protocol,
+      to: SEAPORT_PROTOCOL_ADDRESS,
       value: fulfillmentData.transaction.value,
     });
   } catch (e) {
-    console.log("Error", e);
+    throw new Error("Failed to purchase");
   }
-  // return c.contract({
-  //   abi,
-  //   chainId: CHAIN,
-  //   functionName: "mintPublic",
-  //   args: [amtToMint],
-  //   to: CONTRACT_ADDRESS,
-  //   value: parseEther((price * amtToMint).toString()),
-  // });
 });
 
 app.frame("/", async (c) => {
@@ -118,18 +91,16 @@ app.frame("/", async (c) => {
   const firstOfferItem = floorListing.protocol_data.parameters.offer[0];
   const { token, identifierOrCriteria } = firstOfferItem;
 
-  console.log("fudge", token, identifierOrCriteria);
-
   const nft = await getNft({
     chain: CHAIN_NAME,
     address: token,
     identifier: identifierOrCriteria,
   });
-  console.log("NFT!", nft);
 
   const description = `Purchase via Frame\nPrice: ${parsedPrice} ${currency}`;
   const imgSrc = nft?.image_url;
-  const isSvg = imgSrc?.endsWith(".svg");
+
+  // NOTE: svg image urls don't seem to work properly
 
   return c.res({
     image: (
