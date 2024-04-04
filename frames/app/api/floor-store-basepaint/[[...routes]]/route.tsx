@@ -4,7 +4,7 @@ import { Button, Frog, TextInput, parseEther } from "frog";
 import { devtools } from "frog/dev";
 import { handle } from "frog/next";
 import { serveStatic } from "frog/serve-static";
-import { encodeAbiParameters, encodeFunctionData, formatEther } from "viem";
+import { formatEther } from "viem";
 import api from "api";
 
 import { abi } from "./abi.ts";
@@ -50,7 +50,7 @@ const app = new Frog({
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 });
 
-app.transaction("/mint", async (c) => {
+app.transaction("/buy", async (c) => {
   const floorListing = await getFloorListing(SLUG);
 
   const listing = {
@@ -121,7 +121,7 @@ app.frame("/", async (c) => {
           width: "100%",
         }}
       >
-        {/* <img src={imgSrc} style={{ position: "absolute", width: 1600 }} /> */}
+        <img src={imgSrc} style={{ position: "absolute", width: 1600 }} />
         <div
           style={{
             color: "white",
@@ -157,7 +157,7 @@ app.frame("/", async (c) => {
         </div>
       </div>
     ),
-    intents: [<Button.Transaction target="/mint">Buy now</Button.Transaction>],
+    intents: [<Button.Transaction target="/buy">Buy now</Button.Transaction>],
   });
 });
 
