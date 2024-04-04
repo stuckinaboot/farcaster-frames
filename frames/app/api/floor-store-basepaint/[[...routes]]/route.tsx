@@ -121,7 +121,7 @@ app.frame("/", async (c) => {
           width: "100%",
         }}
       >
-        <img src={imgSrc} style={{ position: "absolute", width: 1600 }} />
+        {/* <img src={imgSrc} style={{ position: "absolute", width: 1600 }} /> */}
         <div
           style={{
             color: "white",
