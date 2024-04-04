@@ -7,7 +7,7 @@ import { serveStatic } from "frog/serve-static";
 import { formatEther } from "viem";
 import api from "api";
 
-import { abi } from "./abi.ts";
+import { abi } from "../abi.ts";
 const sdk = api("@opensea/v2.0#27kiuuluk3ys90");
 sdk.server("https://api.opensea.io");
 
@@ -16,6 +16,7 @@ sdk.auth(process.env.OS_API_KEY);
 const SEAPORT_PROTOCOL_ADDRESS = "0x0000000000000068f116a894984e2db1123eb395";
 
 const IS_TESTNETS = false;
+
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN_NAME = "base";
@@ -45,34 +46,29 @@ async function getNft(params: {
 
 const app = new Frog({
   assetsPath: "/",
-  basePath: "/api/floor-store-basepaint",
+  basePath: "/api/floor-store",
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 });
 
 app.transaction("/buy", async (c) => {
-  console.log("wut");
+  console.log("HELLO!");
+  const floorListing = await getFloorListing(SLUG);
+
+  const listing = {
+    hash: floorListing.order_hash,
+    chain: CHAIN_NAME,
+    protocol: SEAPORT_PROTOCOL_ADDRESS,
+  };
+  const fulfiller = { address: c.address };
 
   try {
-    console.log("GETTING!");
-    const floorListing = await getFloorListing(SLUG);
-    console.log("GOT BEST LISTING!");
-
-    const listing = {
-      hash: floorListing.order_hash,
-      chain: CHAIN_NAME,
-      protocol: SEAPORT_PROTOCOL_ADDRESS,
-    };
-    const fulfiller = { address: c.address };
-
-    console.log("Getting data!");
     const data = await sdk.generate_listing_fulfillment_data_v2({
       listing,
       fulfiller,
     });
-    console.log("Got data!");
+    console.log("GOT DATA", data);
     const fulfillmentData = data.data.fulfillment_data;
-    console.log("FINAL DATA!", fulfillmentData.transaction.input_data);
 
     return c.contract({
       abi: abi,
@@ -83,13 +79,12 @@ app.transaction("/buy", async (c) => {
       value: fulfillmentData.transaction.value,
     });
   } catch (e) {
-    console.log(e);
+    console.log("Fudge", e);
     throw new Error("Failed to purchase");
   }
 });
 
 app.frame("/", async (c) => {
-  console.log("LOAD FRAME");
   const { status } = c;
 
   const floorListing = await getFloorListing(SLUG);
@@ -170,10 +165,4 @@ app.frame("/", async (c) => {
   });
 });
 
-devtools(app, { serveStatic });
-
-export const GET = handle(app);
-export const POST = handle(app);
-
-// Uncomment to use Edge Runtime
-// export const runtime = 'edge'
+export { app };
