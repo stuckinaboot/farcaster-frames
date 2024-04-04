@@ -20,10 +20,12 @@ const CONTRACT_ADDRESS = IS_TESTNETS
   : "0x80ad4e5c5ae9d6c6bff364b1e672b5e144751e92";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
+const CHAIN_NAME = "base";
 const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 
 // UI
-const COLLECTION_NAME = "Based Moon";
+const SLUG = "basepaint";
+const COLLECTION_NAME = "BasePaint";
 const TITLE = `Floor Store: ${COLLECTION_NAME}`;
 const BACKGROUND_IMG_SRC = "/assets/moon.png";
 const DESCRIPTION =
@@ -37,6 +39,15 @@ async function getFloorListing(slug: string) {
   return bestListing;
 }
 
+async function getNft(params: {
+  chain: string;
+  address: string;
+  identifier: string;
+}) {
+  const response = await sdk.get_nft(params);
+  return response?.data?.nft;
+}
+
 const app = new Frog({
   assetsPath: "/",
   basePath: "/api",
@@ -45,17 +56,13 @@ const app = new Frog({
 });
 
 app.transaction("/mint", async (c) => {
-  const { inputText } = c;
-  const amtToMint = parseInt(inputText || "1") || 1;
-
-  const floorListing = await getFloorListing("mushroom-pixel-5557");
+  const floorListing = await getFloorListing(SLUG);
 
   const hash = floorListing.order_hash;
-  const chain = "base";
+  const chain = CHAIN_NAME;
   const protocol = "0x0000000000000068f116a894984e2db1123eb395";
   const listing = { hash, chain, protocol };
-  // TODO use address
-  const fulfiller = { address: "0xaf708ad676a9558206e108afc07bd798dda0dafd" };
+  const fulfiller = { address: c.address };
 
   try {
     const data = await sdk.generate_listing_fulfillment_data_v2({
@@ -103,13 +110,26 @@ app.transaction("/mint", async (c) => {
 app.frame("/", async (c) => {
   const { status } = c;
 
-  const floorListing = await getFloorListing("mushroom-pixel-5557");
+  const floorListing = await getFloorListing(SLUG);
   const price = floorListing?.price?.current?.value;
   const currency = floorListing?.price?.current?.currency;
   const parsedPrice = formatEther(price);
-  console.log("KEY", floorListing, parsedPrice);
+
+  const firstOfferItem = floorListing.protocol_data.parameters.offer[0];
+  const { token, identifierOrCriteria } = firstOfferItem;
+
+  console.log("fudge", token, identifierOrCriteria);
+
+  const nft = await getNft({
+    chain: CHAIN_NAME,
+    address: token,
+    identifier: identifierOrCriteria,
+  });
+  console.log("NFT!", nft);
 
   const description = `Purchase via Frame\nPrice: ${parsedPrice} ${currency}`;
+  const imgSrc = nft?.image_url;
+  const isSvg = imgSrc?.endsWith(".svg");
 
   return c.res({
     image: (
@@ -130,10 +150,7 @@ app.frame("/", async (c) => {
           width: "100%",
         }}
       >
-        <img
-          src={BACKGROUND_IMG_SRC}
-          style={{ position: "absolute", width: 1600 }}
-        />
+        <img src={imgSrc} style={{ position: "absolute", width: 1600 }} />
         <div
           style={{
             color: "white",
@@ -161,6 +178,7 @@ app.frame("/", async (c) => {
             marginTop: 30,
             padding: "0 120px",
             whiteSpace: "pre-wrap",
+            backgroundColor: "black",
             textAlign: "center",
           }}
         >
