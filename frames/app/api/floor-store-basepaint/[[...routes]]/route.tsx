@@ -70,10 +70,16 @@ app.transaction("/buy", async (c) => {
       +floorListing.protocol_data.parameters.offer[0].startAmount;
     const value = floorListing?.price?.current?.value / quantity;
 
+    console.log(
+      "UPDATE WOAH",
+      c.address,
+      fulfillmentData.transaction.input_data.order.parameters
+    );
+
     return c.contract({
       abi: abi,
       functionName: "fulfillBasicOrder_efficient_6GL6yc",
-      args: [fulfillmentData.transaction.input_data.parameters],
+      args: [fulfillmentData.transaction.input_data.order.parameters],
       chainId: CHAIN,
       to: SEAPORT_PROTOCOL_ADDRESS,
       value: BigInt(value),
