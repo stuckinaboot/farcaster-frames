@@ -23,7 +23,7 @@ const DESCRIPTION =
 
 const app = new Frog({
   assetsPath: "/",
-  basePath: "/api",
+  basePath: "/api/mint-based-moon-nextjs",
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 });

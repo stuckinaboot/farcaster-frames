@@ -45,7 +45,7 @@ async function getNft(params: {
 
 const app = new Frog({
   assetsPath: "/",
-  basePath: "/api",
+  basePath: "/api/floor-store-basepaint",
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 });
