@@ -4,11 +4,13 @@ import { Button, Frog, TextInput, parseEther } from "frog";
 import { devtools } from "frog/dev";
 import { handle } from "frog/next";
 import { serveStatic } from "frog/serve-static";
-import { encodeAbiParameters, encodeFunctionData } from "viem";
+import { encodeAbiParameters, encodeFunctionData, formatEther } from "viem";
 import api from "api";
 
 import { abi } from "./abi.ts";
 const sdk = api("@opensea/v2.0#27kiuuluk3ys90");
+sdk.server("https://api.opensea.io");
+
 console.log("KEY!", process.env.OS_API_KEY);
 sdk.auth(process.env.OS_API_KEY);
 
@@ -21,10 +23,19 @@ const CONTRACT_ADDRESS = IS_TESTNETS
 const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 
 // UI
-const TITLE = "Mint an onchain Based Moon NFT";
+const COLLECTION_NAME = "Based Moon";
+const TITLE = `Floor Store: ${COLLECTION_NAME}`;
 const BACKGROUND_IMG_SRC = "/assets/moon.png";
 const DESCRIPTION =
   "Based Moons are onchain interactive moon NFTs with art updating in real-time to closely reflect the phase of the real world moon";
+
+async function getFloorListing(slug: string) {
+  const bestListings = await sdk.get_best_listings_on_collection_v2({
+    collection_slug: slug,
+  });
+  const bestListing = bestListings?.data?.listings[0];
+  return bestListing;
+}
 
 const app = new Frog({
   assetsPath: "/",
@@ -37,13 +48,13 @@ app.transaction("/mint", async (c) => {
   const { inputText } = c;
   const amtToMint = parseInt(inputText || "1") || 1;
 
-  const price = 0.001;
+  const floorListing = await getFloorListing("mushroom-pixel-5557");
 
-  const hash =
-    "0x64e7bae1577733223d91f08d66eae28ea2f5f240edd75074c0f415255c7b2a21";
+  const hash = floorListing.order_hash;
   const chain = "base";
   const protocol = "0x0000000000000068f116a894984e2db1123eb395";
   const listing = { hash, chain, protocol };
+  // TODO use address
   const fulfiller = { address: "0xaf708ad676a9558206e108afc07bd798dda0dafd" };
 
   try {
@@ -89,8 +100,17 @@ app.transaction("/mint", async (c) => {
   // });
 });
 
-app.frame("/", (c) => {
+app.frame("/", async (c) => {
   const { status } = c;
+
+  const floorListing = await getFloorListing("mushroom-pixel-5557");
+  const price = floorListing?.price?.current?.value;
+  const currency = floorListing?.price?.current?.currency;
+  const parsedPrice = formatEther(price);
+  console.log("KEY", floorListing, parsedPrice);
+
+  const description = `Purchase via Frame\nPrice: ${parsedPrice} ${currency}`;
+
   return c.res({
     image: (
       <div
@@ -144,14 +164,11 @@ app.frame("/", (c) => {
             textAlign: "center",
           }}
         >
-          {DESCRIPTION}
+          {description}
         </div>
       </div>
     ),
-    intents: [
-      <TextInput placeholder="Amount to mint" />,
-      <Button.Transaction target="/mint">Mint</Button.Transaction>,
-    ],
+    intents: [<Button.Transaction target="/mint">Buy now</Button.Transaction>],
   });
 });
 
