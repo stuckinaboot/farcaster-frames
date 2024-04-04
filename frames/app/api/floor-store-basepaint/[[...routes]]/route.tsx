@@ -66,10 +66,9 @@ app.transaction("/buy", async (c) => {
       fulfiller,
     });
     const fulfillmentData = data.data.fulfillment_data;
-    const amt = parseInt(
-      floorListing.protocol_data.parameters.offer[0].startAmount
-    );
-    const value = fulfillmentData.transaction.value / amt;
+    const quantity =
+      +floorListing.protocol_data.parameters.offer[0].startAmount;
+    const value = floorListing?.price?.current?.value / quantity;
 
     return c.contract({
       abi: abi,
