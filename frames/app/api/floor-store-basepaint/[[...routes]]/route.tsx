@@ -6,8 +6,8 @@ import { handle } from "frog/next";
 import { serveStatic } from "frog/serve-static";
 import { formatEther } from "viem";
 import api from "api";
+import { abi } from "../../seaportAbi.ts";
 
-import { abi } from "./abi.ts";
 const sdk = api("@opensea/v2.0#27kiuuluk3ys90");
 sdk.server("https://api.opensea.io");
 
