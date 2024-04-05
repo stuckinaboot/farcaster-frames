@@ -30,7 +30,15 @@ async function getFloorListing(slug: string) {
   const bestListings = await sdk.get_best_listings_on_collection_v2({
     collection_slug: slug,
   });
-  const bestListing = bestListings?.data?.listings[0];
+
+  // Get first listing with start amount and end amount art 1
+  const bestListing = bestListings?.data?.listings.find((listing: any) => {
+    const startAmt = +listing.protocol_data.parameters.offer[0].startAmount;
+    const endAmt = +listing.protocol_data.parameters.offer[0].endAmount;
+    return startAmt === 1 && endAmt === 1;
+  });
+
+  // const bestListing = bestListings?.data?.listings[0];
   return bestListing;
 }
 
@@ -74,24 +82,16 @@ app.transaction("/buy", async (c) => {
       0,
       fulfillmentData.transaction.function.indexOf("(")
     );
-    console.log(
-      "UPDATE WOAH",
-      c.address,
-      fulfillmentData.transaction.input_data,
-      fulfillmentData.transaction,
-      functionName
-    );
 
     return c.contract({
       abi: abi,
       functionName: functionName,
-      args: Object.values(fulfillmentData.transaction.input_data) as any[],
+      args: Object.values(fulfillmentData.transaction.input_data) as any,
       chainId: CHAIN,
       to: SEAPORT_PROTOCOL_ADDRESS,
       value: BigInt(value),
     });
   } catch (e) {
-    console.log("error is this", e);
     throw new Error("Failed to purchase");
   }
 });
