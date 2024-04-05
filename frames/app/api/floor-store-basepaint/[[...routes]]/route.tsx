@@ -30,7 +30,15 @@ async function getFloorListing(slug: string) {
   const bestListings = await sdk.get_best_listings_on_collection_v2({
     collection_slug: slug,
   });
-  const bestListing = bestListings?.data?.listings[0];
+
+  // Get first listing with start amount and end amount art 1
+  const bestListing = bestListings?.data?.listings.find((listing: any) => {
+    const startAmt = +listing.protocol_data.parameters.offer[0].startAmount;
+    const endAmt = +listing.protocol_data.parameters.offer[0].endAmount;
+    return startAmt === 1 && endAmt === 1;
+  });
+
+  // const bestListing = bestListings?.data?.listings[0];
   return bestListing;
 }
 
@@ -51,29 +59,37 @@ const app = new Frog({
 });
 
 app.transaction("/buy", async (c) => {
-  const floorListing = await getFloorListing(SLUG);
-
-  const listing = {
-    hash: floorListing.order_hash,
-    chain: CHAIN_NAME,
-    protocol: SEAPORT_PROTOCOL_ADDRESS,
-  };
-  const fulfiller = { address: c.address };
-
   try {
+    const floorListing = await getFloorListing(SLUG);
+
+    const listing = {
+      hash: floorListing.order_hash,
+      chain: CHAIN_NAME,
+      protocol: SEAPORT_PROTOCOL_ADDRESS,
+    };
+    const fulfiller = { address: c.address };
+
     const data = await sdk.generate_listing_fulfillment_data_v2({
       listing,
       fulfiller,
     });
     const fulfillmentData = data.data.fulfillment_data;
+    const quantity =
+      +floorListing.protocol_data.parameters.offer[0].startAmount;
+    const value = floorListing?.price?.current?.value / quantity;
+
+    const functionName = fulfillmentData.transaction.function.substring(
+      0,
+      fulfillmentData.transaction.function.indexOf("(")
+    );
 
     return c.contract({
       abi: abi,
-      functionName: "fulfillBasicOrder_efficient_6GL6yc",
-      args: [fulfillmentData.transaction.input_data.parameters],
+      functionName: functionName,
+      args: Object.values(fulfillmentData.transaction.input_data) as any,
       chainId: CHAIN,
       to: SEAPORT_PROTOCOL_ADDRESS,
-      value: fulfillmentData.transaction.value,
+      value: BigInt(value),
     });
   } catch (e) {
     throw new Error("Failed to purchase");
@@ -84,9 +100,10 @@ app.frame("/", async (c) => {
   const { status } = c;
 
   const floorListing = await getFloorListing(SLUG);
-  const price = floorListing?.price?.current?.value;
+  const quantity = +floorListing.protocol_data.parameters.offer[0].startAmount;
+  const price = floorListing?.price?.current?.value / quantity;
   const currency = floorListing?.price?.current?.currency;
-  const parsedPrice = formatEther(price);
+  const parsedPrice = formatEther(BigInt(price));
 
   const firstOfferItem = floorListing.protocol_data.parameters.offer[0];
   const { token, identifierOrCriteria } = firstOfferItem;
