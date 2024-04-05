@@ -134,6 +134,7 @@ export function generateFloorStoreApp(params: {
     const title = `Floor Store: ${params.collectionName}`;
 
     return c.res({
+      headers: { "Cache-Control": "max-age=15" },
       image: (
         <div
           style={{
