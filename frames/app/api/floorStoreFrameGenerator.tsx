@@ -108,8 +108,10 @@ export function generateFloorStoreApp(params: {
     }
   });
 
-  app.frame("/", async (c) => {
+  app.frame("/:id", async (c) => {
     const { status } = c;
+    // This works!
+    console.log(c.req.path);
 
     const floorListing = await getFloorListing(params.slug);
     const quantity =
