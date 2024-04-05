@@ -89,7 +89,7 @@ app.transaction("/buy", async (c) => {
       args: Object.values(fulfillmentData.transaction.input_data) as any,
       chainId: CHAIN,
       to: SEAPORT_PROTOCOL_ADDRESS,
-      value: BigInt(value),
+      value: BigInt(value) as any,
     });
   } catch (e) {
     throw new Error("Failed to purchase");
