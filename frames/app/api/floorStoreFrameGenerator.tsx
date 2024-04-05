@@ -42,6 +42,13 @@ async function getFloorListing(slug: string) {
   return bestListing;
 }
 
+async function getCollection(slug: string) {
+  const collection = await sdk.get_collection({
+    collection_slug: slug,
+  });
+  return collection?.data;
+}
+
 async function getNft(params: {
   chain: string;
   address: string;
@@ -62,6 +69,7 @@ export function generateFloorStoreApp(params: {
   }) => string;
   slug: string;
   chainId: ChainId;
+  overrideImgSrc?: string;
 }) {
   const app = new Frog({
     assetsPath: "/",
@@ -127,7 +135,9 @@ export function generateFloorStoreApp(params: {
       identifier: identifierOrCriteria,
     });
 
-    const imgSrc = nft?.image_url;
+    const imgSrc = params.overrideImgSrc
+      ? params.overrideImgSrc
+      : nft?.image_url;
 
     // NOTE: svg image urls don't seem to work properly
 
@@ -153,7 +163,13 @@ export function generateFloorStoreApp(params: {
             width: "100%",
           }}
         >
-          <img src={imgSrc} style={{ position: "absolute", width: 1600 }} />
+          <img
+            src={imgSrc}
+            style={{
+              position: "absolute",
+              width: 1600,
+            }}
+          />
           <div
             style={{
               color: "white",
