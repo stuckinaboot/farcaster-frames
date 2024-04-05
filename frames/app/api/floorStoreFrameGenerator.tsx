@@ -184,9 +184,9 @@ export function generateFloorStoreApp(params: {
               textAlign: "center",
             }}
           >
-            {params.description
+            {params.description != null
               ? params.description({ price: parsedPrice, currency })
-              : `Purchase via Frame\nPrice: ${price} ${currency}`}
+              : `Purchase via Frame\nPrice: ${parsedPrice} ${currency}`}
           </div>
         </div>
       ),
