@@ -11,8 +11,6 @@ import {
 const app = generateFloorStoreApp({
   collectionName: "BasePaint",
   slug: "basepaint",
-  description: ({ price, currency }) =>
-    `Purchase via Frame\nPrice: ${price} ${currency}`,
   chainId: ChainId.BASE,
 });
 

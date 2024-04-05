@@ -53,7 +53,7 @@ async function getNft(params: {
 
 export function generateFloorStoreApp(params: {
   collectionName: string;
-  description: ({
+  description?: ({
     price,
     currency,
   }: {
@@ -184,7 +184,9 @@ export function generateFloorStoreApp(params: {
               textAlign: "center",
             }}
           >
-            {params.description({ price: parsedPrice, currency })}
+            {params.description
+              ? params.description({ price: parsedPrice, currency })
+              : `Purchase via Frame\nPrice: ${price} ${currency}`}
           </div>
         </div>
       ),

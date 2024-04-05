@@ -11,8 +11,6 @@ import {
 const app = generateFloorStoreApp({
   collectionName: "Based Onchain Dinos",
   slug: "based-onchain-dinos",
-  description: ({ price, currency }) =>
-    `Purchase via Frame\nPrice: ${price} ${currency}`,
   chainId: ChainId.BASE,
 });
 
