@@ -9,8 +9,8 @@ import {
 } from "../../floorStoreFrameGenerator.tsx";
 
 const app = generateFloorStoreApp({
-  collectionName: "BasePaint",
-  slug: "basepaint",
+  collectionName: "Based Onchain Dinos",
+  slug: "based-onchain-dinos",
   chainId: ChainId.BASE,
 });
 
