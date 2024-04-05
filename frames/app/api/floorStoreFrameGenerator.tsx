@@ -51,8 +51,14 @@ async function getNft(params: {
   return response?.data?.nft;
 }
 
+async function getCollection(slug: string) {
+  const collection = await sdk.get_collection({
+    collection_slug: slug,
+  });
+  return collection?.data;
+}
+
 export function generateFloorStoreApp(params: {
-  collectionName: string;
   description?: ({
     price,
     currency,
@@ -65,7 +71,7 @@ export function generateFloorStoreApp(params: {
 }) {
   const app = new Frog({
     assetsPath: "/",
-    basePath: `/api/floor-store-${params.slug}`,
+    basePath: "/api/floor-store-basepaint",
     // Supply a Hub to enable frame verification.
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
   });
@@ -108,10 +114,60 @@ export function generateFloorStoreApp(params: {
     }
   });
 
-  app.frame("/:id", async (c) => {
+  app.frame("/:slug", async (c) => {
     const { status } = c;
     // This works!
-    console.log(c.req.path);
+    const slug = c.req.param("slug");
+    const path = c.req.path;
+    let collectionName;
+    try {
+      console.log("RUNNING", slug, path);
+      const collection = await getCollection(slug);
+      collectionName = collection.name;
+    } catch (e) {
+      console.log("E", e);
+      return c.res({
+        image: (
+          <div
+            style={{
+              alignItems: "center",
+              background:
+                status === "response"
+                  ? "linear-gradient(to right, #432889, #17101F)"
+                  : "black",
+              backgroundSize: "100% 100%",
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "nowrap",
+              height: "100%",
+              justifyContent: "center",
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: 60,
+                fontStyle: "normal",
+                letterSpacing: "-0.025em",
+                lineHeight: 1.4,
+                marginTop: 30,
+                padding: "0 120px",
+                whiteSpace: "pre-wrap",
+                backgroundColor: "black",
+                textAlign: "center",
+              }}
+            >
+              No collection found
+            </div>
+          </div>
+        ),
+        intents: [
+          <Button.Transaction target="/buy">Buy now</Button.Transaction>,
+        ],
+      });
+    }
 
     const floorListing = await getFloorListing(params.slug);
     const quantity =
@@ -133,7 +189,7 @@ export function generateFloorStoreApp(params: {
 
     // NOTE: svg image urls don't seem to work properly
 
-    const title = `Floor Store: ${params.collectionName}`;
+    const title = `Floor Store: ${collectionName}`;
 
     return c.res({
       image: (

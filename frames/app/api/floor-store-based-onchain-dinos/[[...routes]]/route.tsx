@@ -9,7 +9,6 @@ import {
 } from "../../floorStoreFrameGenerator.tsx";
 
 const app = generateFloorStoreApp({
-  collectionName: "Based Onchain Dinos",
   slug: "based-onchain-dinos",
   chainId: ChainId.BASE,
 });

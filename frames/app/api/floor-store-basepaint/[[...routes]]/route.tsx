@@ -9,7 +9,6 @@ import {
 } from "../../floorStoreFrameGenerator.tsx";
 
 const app = generateFloorStoreApp({
-  collectionName: "BasePaint",
   slug: "basepaint",
   chainId: ChainId.BASE,
 });
