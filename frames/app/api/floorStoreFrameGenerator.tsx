@@ -70,6 +70,7 @@ export function generateFloorStoreApp(params: {
   slug: string;
   chainId: ChainId;
   overrideImgSrc?: string;
+  noDescriptionBackgroundColor?: boolean;
 }) {
   const app = new Frog({
     assetsPath: "/",
@@ -197,7 +198,9 @@ export function generateFloorStoreApp(params: {
               marginTop: 30,
               padding: "0 120px",
               whiteSpace: "pre-wrap",
-              backgroundColor: "black",
+              backgroundColor: params.noDescriptionBackgroundColor
+                ? ""
+                : "black",
               textAlign: "center",
             }}
           >
