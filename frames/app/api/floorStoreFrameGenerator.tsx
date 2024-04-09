@@ -1,6 +1,6 @@
 /** @jsxImportSource frog/jsx */
 
-import { Button, Frog, TextInput, parseEther } from "frog";
+import { Button, Frog, TextInput, TransactionContext, parseEther } from "frog";
 import { formatEther } from "viem";
 import api from "api";
 import { abi } from "./seaportAbi.ts";
@@ -59,7 +59,7 @@ async function getNft(params: {
 }
 
 export function generateFloorStoreApp(params: {
-  collectionName: string;
+  collectionName?: string;
   description?: ({
     price,
     currency,
@@ -67,7 +67,7 @@ export function generateFloorStoreApp(params: {
     price: string;
     currency: string;
   }) => string;
-  slug: string;
+  slug?: string;
   chainId: ChainId;
   overrideImgSrc?: string;
   noDescriptionBackgroundColor?: boolean;
@@ -79,9 +79,15 @@ export function generateFloorStoreApp(params: {
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
   });
 
-  app.transaction("/buy", async (c) => {
+  function slugFromPathOrConfig(c: any) {
+    const slugFromPath = c.req.param("slug");
+    return params.slug || slugFromPath;
+  }
+
+  app.transaction("/buy/:slug", async (c) => {
     try {
-      const floorListing = await getFloorListing(params.slug);
+      const slug = slugFromPathOrConfig(c);
+      const floorListing = await getFloorListing(slug);
 
       const listing = {
         hash: floorListing.order_hash,
@@ -119,53 +125,57 @@ export function generateFloorStoreApp(params: {
 
   app.frame("/:slug", async (c) => {
     const { status } = c;
-    const slugFromPath = c.req.param("slug");
-    let collectionName = "";
-    try {
-      const collection = await getCollection(slugFromPath);
-      collectionName = collection.name;
-    } catch (e) {
-      return c.res({
-        image: (
-          <div
-            style={{
-              alignItems: "center",
-              background:
-                status === "response"
-                  ? "linear-gradient(to right, #432889, #17101F)"
-                  : "black",
-              backgroundSize: "100% 100%",
-              display: "flex",
-              flexDirection: "column",
-              flexWrap: "nowrap",
-              height: "100%",
-              justifyContent: "center",
-              textAlign: "center",
-              width: "100%",
-            }}
-          >
+    const slug = slugFromPathOrConfig(c);
+    let collectionName;
+    if (params.collectionName && params.slug) {
+      collectionName = params.collectionName;
+
+      try {
+        const collection = await getCollection(slug);
+        collectionName = collection.name;
+      } catch (e) {
+        return c.res({
+          image: (
             <div
               style={{
-                color: "white",
-                fontSize: 60,
-                fontStyle: "normal",
-                letterSpacing: "-0.025em",
-                lineHeight: 1.4,
-                marginTop: 30,
-                padding: "0 120px",
-                whiteSpace: "pre-wrap",
-                backgroundColor: "black",
+                alignItems: "center",
+                background:
+                  status === "response"
+                    ? "linear-gradient(to right, #432889, #17101F)"
+                    : "black",
+                backgroundSize: "100% 100%",
+                display: "flex",
+                flexDirection: "column",
+                flexWrap: "nowrap",
+                height: "100%",
+                justifyContent: "center",
                 textAlign: "center",
+                width: "100%",
               }}
             >
-              No collection found
+              <div
+                style={{
+                  color: "white",
+                  fontSize: 60,
+                  fontStyle: "normal",
+                  letterSpacing: "-0.025em",
+                  lineHeight: 1.4,
+                  marginTop: 30,
+                  padding: "0 120px",
+                  whiteSpace: "pre-wrap",
+                  backgroundColor: "black",
+                  textAlign: "center",
+                }}
+              >
+                No collection found
+              </div>
             </div>
-          </div>
-        ),
-      });
+          ),
+        });
+      }
     }
 
-    const floorListing = await getFloorListing(params.slug);
+    const floorListing = await getFloorListing(slug);
     const quantity =
       +floorListing.protocol_data.parameters.offer[0].startAmount;
     const price = floorListing?.price?.current?.value / quantity;
@@ -255,7 +265,9 @@ export function generateFloorStoreApp(params: {
           </div>
         </div>
       ),
-      intents: [<Button.Transaction target="/buy">Buy now</Button.Transaction>],
+      intents: [
+        <Button.Transaction target="/buy/:slug">Buy now</Button.Transaction>,
+      ],
     });
   });
   return app;
