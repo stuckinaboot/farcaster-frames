@@ -117,8 +117,53 @@ export function generateFloorStoreApp(params: {
     }
   });
 
-  app.frame("/", async (c) => {
+  app.frame("/:slug", async (c) => {
     const { status } = c;
+    const slugFromPath = c.req.param("slug");
+    let collectionName = "";
+    try {
+      const collection = await getCollection(slugFromPath);
+      collectionName = collection.name;
+    } catch (e) {
+      return c.res({
+        image: (
+          <div
+            style={{
+              alignItems: "center",
+              background:
+                status === "response"
+                  ? "linear-gradient(to right, #432889, #17101F)"
+                  : "black",
+              backgroundSize: "100% 100%",
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "nowrap",
+              height: "100%",
+              justifyContent: "center",
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: 60,
+                fontStyle: "normal",
+                letterSpacing: "-0.025em",
+                lineHeight: 1.4,
+                marginTop: 30,
+                padding: "0 120px",
+                whiteSpace: "pre-wrap",
+                backgroundColor: "black",
+                textAlign: "center",
+              }}
+            >
+              No collection found
+            </div>
+          </div>
+        ),
+      });
+    }
 
     const floorListing = await getFloorListing(params.slug);
     const quantity =
@@ -142,7 +187,7 @@ export function generateFloorStoreApp(params: {
 
     // NOTE: svg image urls don't seem to work properly
 
-    const title = `Floor Store: ${params.collectionName}`;
+    const title = `Floor Store: ${collectionName}`;
 
     return c.res({
       headers: { "cache-control": "max-age=15" },
