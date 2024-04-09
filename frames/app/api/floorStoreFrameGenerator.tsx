@@ -74,7 +74,9 @@ export function generateFloorStoreApp(params: {
 }) {
   const app = new Frog({
     assetsPath: "/",
-    basePath: `/api/floor-store-${params.slug}`,
+    basePath: params.slug
+      ? `/api/floor-store-${params.slug}`
+      : "/api/floor-store",
     // Supply a Hub to enable frame verification.
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
   });
@@ -127,9 +129,10 @@ export function generateFloorStoreApp(params: {
     const { status } = c;
     const slug = slugFromPathOrConfig(c);
     let collectionName;
-    if (params.collectionName && params.slug) {
+    if (params.collectionName) {
       collectionName = params.collectionName;
-
+    }
+    if (!params.slug) {
       try {
         const collection = await getCollection(slug);
         collectionName = collection.name;
@@ -266,7 +269,9 @@ export function generateFloorStoreApp(params: {
         </div>
       ),
       intents: [
-        <Button.Transaction target="/buy/:slug">Buy now</Button.Transaction>,
+        <Button.Transaction target={`/buy/${slug}`}>
+          Buy now
+        </Button.Transaction>,
       ],
     });
   });
