@@ -28,10 +28,6 @@ export default function Home() {
               variant="standard"
               label="OpenSea Collection URL"
               fullWidth
-              onChange={(e) => {
-                val = e.target.value;
-                frameLink = e.target.value;
-              }}
             />
           </Grid>
         </Grid>
