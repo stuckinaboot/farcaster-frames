@@ -1,119 +1,52 @@
-import { getFrameMetadata } from 'frog/next'
-import type { Metadata } from 'next'
-import Image from 'next/image'
+import { getFrameMetadata } from "frog/next";
+import type { Metadata } from "next";
 
-import styles from './page.module.css'
+import styles from "./page.module.css";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 
 export async function generateMetadata(): Promise<Metadata> {
   const frameTags = await getFrameMetadata(
-    `${process.env.VERCEL_URL || 'http://localhost:3000'}/api`,
-  )
+    `${process.env.VERCEL_URL || "http://localhost:3000"}/api`
+  );
   return {
     other: frameTags,
-  }
+  };
 }
 
 export default function Home() {
+  let val;
+  let frameLink;
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>app/page.tsx</code>
-          </p>
-          <p>
-            Head to{' '}
-            <a
-              href="/api/dev"
-              style={{ display: 'inline', fontWeight: 'semibold' }}
-            >
-              <code className={styles.code}>localhost:3000/api</code>
-            </a>{' '}
-            for your frame endpoint.
-          </p>
-        </div>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <main className={styles.main} style={{ width: "100%" }}>
+      <Grid container justifyContent={"center"} spacing="4">
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Typography variant="h4">Generate Floor Store Frame</Typography>
+        </Grid>
+        <Grid container item xs={12} justifyContent={"center"}>
+          <Grid item xs={10} sm={6}>
+            <TextField
+              variant="standard"
+              label="OpenSea Collection URL"
+              fullWidth
+              onChange={(e) => {
+                val = e.target.value;
+                frameLink = e.target.value;
+              }}
             />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} justifyContent={"center"}>
+          <Grid item>
+            <Button variant="contained">Generate Floor Store frame</Button>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Typography>Link to your frame:</Typography>
+          <Typography>
+            <a href={frameLink}>{frameLink}</a>
+          </Typography>
+        </Grid>
+      </Grid>
     </main>
-  )
+  );
 }
