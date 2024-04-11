@@ -4,6 +4,8 @@ import { Button, Frog } from "frog";
 import { formatEther } from "viem";
 import api from "api";
 import { abi } from "./seaportAbi.ts";
+import { logEvent } from "./logging.ts";
+import { error } from "console";
 
 const sdk = api("@opensea/v2.0#27kiuuluk3ys90");
 sdk.server("https://api.opensea.io");
@@ -87,8 +89,8 @@ export function generateFloorStoreApp(params: {
   }
 
   app.transaction("/buy/:slug", async (c) => {
+    const slug = slugFromPathOrConfig(c);
     try {
-      const slug = slugFromPathOrConfig(c);
       const floorListing = await getFloorListing(slug);
 
       const listing = {
@@ -105,22 +107,30 @@ export function generateFloorStoreApp(params: {
       const fulfillmentData = data.data.fulfillment_data;
       const quantity =
         +floorListing.protocol_data.parameters.offer[0].startAmount;
-      const value = floorListing?.price?.current?.value / quantity;
+      const price = floorListing?.price?.current?.value / quantity;
 
       const functionName = fulfillmentData.transaction.function.substring(
         0,
         fulfillmentData.transaction.function.indexOf("(")
       );
 
-      return c.contract({
+      const contractInteraction = c.contract({
         abi: abi,
         functionName: functionName,
         args: Object.values(fulfillmentData.transaction.input_data) as any,
         chainId: params.chainId,
         to: SEAPORT_PROTOCOL_ADDRESS,
-        value: BigInt(value) as any,
+        value: BigInt(price) as any,
       });
+      await logEvent({ slug, route: "buy", value: price, success: true });
+      return contractInteraction;
     } catch (e) {
+      await logEvent({
+        slug,
+        route: "buy",
+        success: false,
+        error: (e as any)?.message,
+      });
       throw new Error("Failed to purchase");
     }
   });
@@ -139,6 +149,12 @@ export function generateFloorStoreApp(params: {
         collectionName = collection.name;
         collectionImage = collection.image_url;
       } catch (e) {
+        await logEvent({
+          slug,
+          route: "index",
+          success: false,
+          error: (e as any)?.message,
+        });
         return c.res({
           image: (
             <div
@@ -208,6 +224,12 @@ export function generateFloorStoreApp(params: {
 
     const title = `Floor Store: ${collectionName}`;
 
+    await logEvent({
+      slug,
+      route: "index",
+      success: true,
+      price,
+    });
     return c.res({
       headers: { "cache-control": "max-age=15" },
       image: (
