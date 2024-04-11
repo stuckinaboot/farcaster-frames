@@ -19,12 +19,12 @@ export default function FloorStoreFrameGenerator() {
   }/api/floor-store/${slugFromCollectionUrl(collectionUrl)}`;
 
   return (
-    <Grid item container xs={12} justifyContent={"center"} spacing="8">
+    <Grid item container xs={12} justifyContent={"center"} spacing="20">
       <Grid item xs={12} style={{ textAlign: "center" }}>
         <Typography variant="h3">Generate Floor Store Frame</Typography>
         <Typography variant="body1">
-          Create a farcaster frame that allows people to buy the floor NFT in
-          any collection with one tap. No code required.
+          Create your own farcaster frame that allows people to buy the floor
+          NFT in any collection with one tap. No code required.
         </Typography>
       </Grid>
       <Grid
@@ -78,7 +78,7 @@ export default function FloorStoreFrameGenerator() {
             Step 3: Create a farcaster cast, paste your frame link, and share!
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Divider style={{ width: "100%" }} />
           <Typography variant="body1">
             <b>Running into issues?</b>
