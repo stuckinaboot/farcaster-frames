@@ -1,9 +1,10 @@
 "use client";
 
-import { Button, Grid, TextField, Typography } from "@mui/material";
-import Link from "next/link";
+import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import StyledLink from "./Link";
+import copy from "copy-to-clipboard";
+import cogoToast from "cogo-toast";
 
 export default function FloorStoreFrameGenerator() {
   const [collectionUrl, setCollectionUrl] = useState("");
@@ -18,10 +19,9 @@ export default function FloorStoreFrameGenerator() {
   }/api/floor-store/${slugFromCollectionUrl(collectionUrl)}`;
 
   return (
-    <Grid container justifyContent={"center"} spacing="8">
+    <Grid item container xs={12} justifyContent={"center"} spacing="8">
       <Grid item xs={12} style={{ textAlign: "center" }}>
         <Typography variant="h3">Generate Floor Store Frame</Typography>
-
         <Typography variant="body1">
           Create a farcaster frame that allows people to buy the floor NFT in
           any collection with one tap. No code required.
@@ -38,8 +38,11 @@ export default function FloorStoreFrameGenerator() {
         <Grid container item xs={12} justifyContent={"center"}>
           <Grid item xs={12}>
             <Typography variant="h6">
-              Step 1: enter the OpenSea collection URL (ex.
-              https://opensea.io/collection/oviators)
+              Step 1: Enter an OpenSea collection URL (ex.{" "}
+              <StyledLink url="https://opensea.io/collection/oviators">
+                https://opensea.io/collection/oviators
+              </StyledLink>
+              )
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -49,12 +52,22 @@ export default function FloorStoreFrameGenerator() {
               fullWidth
               value={collectionUrl}
               onChange={(e) => setCollectionUrl(e.target.value)}
+              placeholder="https://opensea.io/collection/oviators"
             />
           </Grid>
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h6">
             Step 2: Copy the link to your frame{" "}
+            <Button
+              onClick={() => {
+                copy(frameLink);
+                cogoToast.success("Copied frame link successfully");
+              }}
+              variant="contained"
+            >
+              Copy
+            </Button>{" "}
             <StyledLink url={frameLink}>{frameLink}</StyledLink>
           </Typography>
         </Grid>
@@ -64,7 +77,10 @@ export default function FloorStoreFrameGenerator() {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6">Running into issues?</Typography>
+          <Divider style={{ width: "100%" }} />
+          <Typography variant="body1">
+            <b>Running into issues?</b>
+          </Typography>
           <Typography variant="body2">
             1. No background image displays on the frame: Frame generation
             relies on a PNG/JPEG collection image existing for the particular
@@ -95,7 +111,7 @@ export default function FloorStoreFrameGenerator() {
               <StyledLink url={"https://twitter.com/AspynPalatnick"}>
                 twitter
               </StyledLink>
-              . The source code for this project can be found on{" "}
+              ). The source code for this project can be found on{" "}
               <StyledLink
                 url={"https://github.com/stuckinaboot/farcaster-frames"}
               >

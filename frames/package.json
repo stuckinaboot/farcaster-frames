@@ -14,6 +14,8 @@
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.15",
     "api": "^6.1.1",
+    "cogo-toast": "^4.2.3",
+    "copy-to-clipboard": "^3.3.3",
     "frog": "latest",
     "hono": "^4",
     "next": "14.1.0",
