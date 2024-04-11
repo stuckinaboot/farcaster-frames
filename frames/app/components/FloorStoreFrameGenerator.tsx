@@ -38,11 +38,13 @@ export default function FloorStoreFrameGenerator() {
         <Grid container item xs={12} justifyContent={"center"}>
           <Grid item xs={12}>
             <Typography variant="h6">
-              Step 1: Enter an OpenSea collection URL (ex.{" "}
+              Step 1: Enter an OpenSea collection URL
+            </Typography>
+            <Typography variant="body1">
+              Example:{" "}
               <StyledLink url="https://opensea.io/collection/oviators">
                 https://opensea.io/collection/oviators
               </StyledLink>
-              )
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -117,9 +119,9 @@ export default function FloorStoreFrameGenerator() {
               >
                 GitHub
               </StyledLink>
-              . Use this project at your own risk and discretion. While this
-              project is powered by the public OpenSea API, this is not an
-              official OpenSea tool.
+              . Use this project and/or the source code at your own risk and
+              discretion. While this project is powered by the public OpenSea
+              API, this is not an official OpenSea tool.
             </Typography>
           </Grid>
         </Grid>
