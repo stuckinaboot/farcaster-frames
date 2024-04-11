@@ -122,7 +122,7 @@ export function generateFloorStoreApp(params: {
         to: SEAPORT_PROTOCOL_ADDRESS,
         value: BigInt(price) as any,
       });
-      await logEvent({ slug, route: "buy", value: price, success: true });
+      await logEvent({ slug, route: "buy", price, success: true });
       return contractInteraction;
     } catch (e) {
       await logEvent({
