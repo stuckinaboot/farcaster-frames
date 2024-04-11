@@ -49,7 +49,7 @@ export default function FloorStoreFrameGenerator() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              variant="standard"
+              variant="filled"
               label="OpenSea Collection URL"
               fullWidth
               value={collectionUrl}
