@@ -129,6 +129,7 @@ export function generateFloorStoreApp(params: {
     const { status } = c;
     const slug = slugFromPathOrConfig(c);
     let collectionName;
+    let collectionImage;
     if (params.collectionName) {
       collectionName = params.collectionName;
     }
@@ -136,6 +137,7 @@ export function generateFloorStoreApp(params: {
       try {
         const collection = await getCollection(slug);
         collectionName = collection.name;
+        collectionImage = collection.image_url;
       } catch (e) {
         return c.res({
           image: (
@@ -194,9 +196,13 @@ export function generateFloorStoreApp(params: {
       identifier: identifierOrCriteria,
     });
 
-    const imgSrc = params.overrideImgSrc
+    let imgSrc: string = params.overrideImgSrc
       ? params.overrideImgSrc
       : nft?.image_url;
+    if (imgSrc?.toLowerCase().indexOf(".svg") !== -1) {
+      // SVG won't display properly so attempt to use collection image
+      imgSrc = collectionImage;
+    }
 
     // NOTE: svg image urls don't seem to work properly
 
@@ -232,7 +238,7 @@ export function generateFloorStoreApp(params: {
           <div
             style={{
               color: "white",
-              fontSize: 60,
+              fontSize: 56,
               fontStyle: "normal",
               letterSpacing: "-0.025em",
               lineHeight: 1.4,
