@@ -6,9 +6,10 @@ export async function logEvent(event: any) {
     collection: "farcaster-frame-floor",
     json: JSON.stringify(event),
     timestamp: Math.floor(new Date().getTime() / 1000),
+    url: process.env.VERCEL_URL,
   };
 
-  const response = await fetch("https://api.graphjson.com/api/log", {
+  await fetch("https://api.graphjson.com/api/log", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
