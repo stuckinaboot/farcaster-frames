@@ -41,7 +41,7 @@ export default function FloorStoreFrameGenerator() {
               Step 1: Enter an OpenSea collection URL
             </Typography>
             <Typography variant="body1">
-              Example:{" "}
+              Example collection:{" "}
               <StyledLink url="https://opensea.io/collection/oviators">
                 https://opensea.io/collection/oviators
               </StyledLink>
@@ -69,13 +69,16 @@ export default function FloorStoreFrameGenerator() {
               variant="contained"
             >
               Copy
-            </Button>{" "}
-            <StyledLink url={frameLink}>{frameLink}</StyledLink>
+            </Button>
+            <Typography variant="body1">
+              Your frame link:{" "}
+              <StyledLink url={frameLink}>{frameLink}</StyledLink>
+            </Typography>
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h6">
-            Step 3: Create a farcaster cast, paste your frame link, and share!
+            Step 3: Create a cast, paste your frame link, and share!
           </Typography>
         </Grid>
         <Grid item xs={8}>
