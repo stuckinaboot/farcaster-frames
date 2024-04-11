@@ -6,7 +6,7 @@ export async function logEvent(event: any) {
     collection: "farcaster-frame-floor",
     json: JSON.stringify(event),
     timestamp: Math.floor(new Date().getTime() / 1000),
-    url: process.env.VERCEL_URL,
+    url: process.env.NEXT_PUBLIC_VERCEL_URL,
   };
 
   await fetch("https://api.graphjson.com/api/log", {
