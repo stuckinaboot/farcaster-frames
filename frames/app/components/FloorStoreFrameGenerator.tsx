@@ -55,6 +55,7 @@ export default function FloorStoreFrameGenerator() {
               value={collectionUrl}
               onChange={(e) => setCollectionUrl(e.target.value)}
               placeholder="https://opensea.io/collection/oviators"
+              style={{ border: "1px solid #FFF", borderRadius: "5px" }}
             />
           </Grid>
         </Grid>
