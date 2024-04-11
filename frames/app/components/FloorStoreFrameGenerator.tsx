@@ -94,6 +94,16 @@ export default function FloorStoreFrameGenerator() {
             OpenSea collection URL does not point to a valid collection viewable
             on OpenSea, the frame generation will not work properly and you will
             see the no collection found error.
+            <br />
+            3. The floor price on the frame isn't updating on warpcast: warpcast
+            caches frame images and so it may take some time for the frame image
+            to refresh. Even if the floor price displayed is outdated, when a
+            user goes to purchase an NFT through the frame, it'll use the
+            current floor price on OpenSea.
+            <br />
+            4. The floor seems off for ERC1155s: the frame currently computes
+            the floor using listings that are for a single quantity and does not
+            include listings that are for multiple quantity in the computation.
           </Typography>
         </Grid>
         <Grid
