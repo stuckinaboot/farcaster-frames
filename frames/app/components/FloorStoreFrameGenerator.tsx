@@ -55,6 +55,9 @@ export default function FloorStoreFrameGenerator() {
               value={collectionUrl}
               onChange={(e) => setCollectionUrl(e.target.value)}
               placeholder="https://opensea.io/collection/oviators"
+              // For some reason textfield shows up totally black until you click into it on
+              // dark themed devices. Add white border so on dark themed devices it's obvious the textfield is there.
+              // Ideally we can figure out a better solution for this.
               style={{ border: "1px solid #FFF", borderRadius: "5px" }}
             />
           </Grid>
