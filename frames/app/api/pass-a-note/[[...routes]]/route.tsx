@@ -7,10 +7,10 @@ import { serveStatic } from "frog/serve-static";
 
 import { abi } from "./abi.ts";
 
-const IS_TESTNETS = true;
+const IS_TESTNETS = false;
 const CONTRACT_ADDRESS = IS_TESTNETS
-  ? "0x0646ea2255b51156c6ac7c2f375d5ee1dac41f65"
-  : "0x80ad4e5c5ae9d6c6bff364b1e672b5e144751e92";
+  ? "0x5dDd8a93B92a2ee485588dECaAc397785d8a332b"
+  : "0x7F2bbaC3AA23165388301476Cf5944F541096cF6";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
@@ -18,7 +18,7 @@ const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 // UI
 const TITLE = "Mint and Pass a Note";
 const DESCRIPTION =
-  "When you mint a note, you'll receive ('be passed') a note with a message written by the previous minter. Whoever mints next will receive a note NFT with your message.";
+  "When you mint a note, you'll receive ('be passed') a note with a message written by the previous minter. Whoever mints next will receive a note NFT with your message. After you mint, somebody else must mint the note you wrote before you can mint again. 0.0005 ETH to mint and pass a note.";
 
 const app = new Frog({
   assetsPath: "/",
@@ -99,7 +99,7 @@ app.frame("/", (c) => {
       </div>
     ),
     intents: [
-      <TextInput placeholder="Enter a note... (max 36 chars)" />,
+      <TextInput placeholder="Enter a note... (max 33 chars)" />,
       <Button.Transaction target="/mint">Mint</Button.Transaction>,
     ],
   });
