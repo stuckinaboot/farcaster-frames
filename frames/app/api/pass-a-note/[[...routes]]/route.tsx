@@ -99,7 +99,7 @@ app.frame("/", (c) => {
       </div>
     ),
     intents: [
-      <TextInput placeholder="Enter a note... (max 36 chars)" />,
+      <TextInput placeholder="Enter a note... (max 34 chars)" />,
       <Button.Transaction target="/mint">Mint</Button.Transaction>,
     ],
   });
