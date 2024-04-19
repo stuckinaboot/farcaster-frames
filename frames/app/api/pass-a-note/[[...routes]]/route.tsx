@@ -18,7 +18,7 @@ const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 // UI
 const TITLE = "Mint and Pass a Note";
 const DESCRIPTION =
-  "When you mint a note, you'll receive ('be passed') a note with a message written by the previous minter. Whoever mints next will receive a note NFT with your message.";
+  "When you mint a note, you'll receive ('be passed') a note with a message written by the previous minter. Whoever mints next will receive a note NFT with your message. After you mint, somebody else must mint the note you wrote before you can mint again.";
 
 const app = new Frog({
   assetsPath: "/",
