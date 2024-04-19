@@ -7,10 +7,10 @@ import { serveStatic } from "frog/serve-static";
 
 import { abi } from "./abi.ts";
 
-const IS_TESTNETS = true;
+const IS_TESTNETS = false;
 const CONTRACT_ADDRESS = IS_TESTNETS
   ? "0x5dDd8a93B92a2ee485588dECaAc397785d8a332b"
-  : "0x80ad4e5c5ae9d6c6bff364b1e672b5e144751e92";
+  : "0x7F2bbaC3AA23165388301476Cf5944F541096cF6";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
