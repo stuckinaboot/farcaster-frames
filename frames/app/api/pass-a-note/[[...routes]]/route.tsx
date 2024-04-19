@@ -9,7 +9,7 @@ import { abi } from "./abi.ts";
 
 const IS_TESTNETS = true;
 const CONTRACT_ADDRESS = IS_TESTNETS
-  ? "0x43a2ea86d5dea7e8029b7b7de2c3d114c2fc3f33"
+  ? "0x5dDd8a93B92a2ee485588dECaAc397785d8a332b"
   : "0x80ad4e5c5ae9d6c6bff364b1e672b5e144751e92";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
@@ -18,7 +18,7 @@ const CHAIN = IS_TESTNETS ? "eip155:84532" : "eip155:8453";
 // UI
 const TITLE = "Mint and Pass a Note";
 const DESCRIPTION =
-  "When you mint a note, you'll receive ('be passed') a note with a message written by the previous minter. Whoever mints next will receive a note NFT with your message. After you mint, somebody else must mint the note you wrote before you can mint again.";
+  "When you mint a note, you'll receive ('be passed') a note with a message written by the previous minter. Whoever mints next will receive a note NFT with your message. After you mint, somebody else must mint the note you wrote before you can mint again. 0.0005 ETH to mint and pass a note.";
 
 const app = new Frog({
   assetsPath: "/",
