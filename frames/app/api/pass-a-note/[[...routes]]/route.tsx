@@ -9,7 +9,7 @@ import { abi } from "./abi.ts";
 
 const IS_TESTNETS = true;
 const CONTRACT_ADDRESS = IS_TESTNETS
-  ? "0x0646ea2255b51156c6ac7c2f375d5ee1dac41f65"
+  ? "0x43a2ea86d5dea7e8029b7b7de2c3d114c2fc3f33"
   : "0x80ad4e5c5ae9d6c6bff364b1e672b5e144751e92";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
