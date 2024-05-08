@@ -10,6 +10,7 @@ import truncateEthAddress from "truncate-eth-address";
 
 import { abi } from "./abi.ts";
 import { degen } from "viem/chains";
+import { logEvent } from "../../logging.ts";
 
 const client = createPublicClient({
   chain: degen,
@@ -24,6 +25,8 @@ const CONTRACT_ADDRESS = IS_TESTNETS
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN = IS_TESTNETS ? "eip155:666666666" : "eip155:666666666";
 
+const FRAME_LOGGING_ID = "degen-punks";
+
 // UI
 const TITLE = "Degen Punks";
 const DESCRIPTION =
@@ -37,6 +40,8 @@ const app = new Frog({
 });
 
 app.transaction("/bid", async (c) => {
+  await logEvent({ route: "bid" }, FRAME_LOGGING_ID);
+
   const { inputText } = c;
   let bidAmountString = inputText;
   if (bidAmountString == null) {
@@ -55,15 +60,6 @@ app.transaction("/bid", async (c) => {
     value: parseEther(bidAmountString),
   });
 });
-
-async function getFoo() {
-  const data = await client.call({
-    to: "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9",
-    data: "0xc99a3d9b",
-  });
-  const res = formatEther(BigInt(data.data as string));
-  return res;
-}
 
 async function getLatestPrice() {
   const data = await client.call({
@@ -101,6 +97,8 @@ async function getBestBidder() {
 }
 
 app.frame("/stats", async (c) => {
+  await logEvent({ route: "stats" }, FRAME_LOGGING_ID);
+
   const totalSales = await getTotalSales();
   const latestSalePrice = await getLatestPrice();
   const bestBidPrice = await getBestBid();

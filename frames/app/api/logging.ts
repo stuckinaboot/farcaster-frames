@@ -1,9 +1,9 @@
 import fetch from "node-fetch";
 
-export async function logEvent(event: any) {
+export async function logEvent(event: any, frameCollectionId?: string) {
   const payload = {
-    api_key: "30ee0054-5f4a-4f57-b12f-68f3531aab65",
-    collection: "farcaster-frame-floor",
+    api_key: process.env.GRAPHJSON_API_KEY,
+    collection: frameCollectionId || "farcaster-frame-floor",
     json: JSON.stringify({ ...event, url: process.env.NEXT_PUBLIC_VERCEL_URL }),
     timestamp: Math.floor(new Date().getTime() / 1000),
   };
