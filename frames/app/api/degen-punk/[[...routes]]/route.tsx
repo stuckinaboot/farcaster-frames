@@ -63,7 +63,7 @@ app.transaction("/bid", async (c) => {
 
 async function getLatestPrice() {
   const data = await client.call({
-    to: "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9",
+    to: CONTRACT_ADDRESS,
     data: "0xa74a7b78",
   });
   const res = formatEther(BigInt(data.data as string));
@@ -72,7 +72,7 @@ async function getLatestPrice() {
 
 async function getTotalSales() {
   const data = await client.call({
-    to: "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9",
+    to: CONTRACT_ADDRESS,
     data: "0x80104403",
   });
   return parseInt(data.data as string, 16);
@@ -80,7 +80,7 @@ async function getTotalSales() {
 
 async function getBestBid() {
   const data = await client.call({
-    to: "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9",
+    to: CONTRACT_ADDRESS,
     data: "0xd57bde79",
   });
   return formatEther(BigInt(data.data as string));
@@ -88,7 +88,7 @@ async function getBestBid() {
 
 async function getBestBidder() {
   const data = await client.call({
-    to: "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9",
+    to: CONTRACT_ADDRESS,
     data: "0x91f90157",
   });
   const address = "0x" + (data.data as string).substring(26);
