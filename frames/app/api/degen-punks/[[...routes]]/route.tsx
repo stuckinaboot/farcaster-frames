@@ -131,6 +131,12 @@ app.frame("/stats", async (c) => {
           color: "white",
         }}
       >
+        <img
+          src={"/assets/degen-punks-image.png"}
+          style={{
+            position: "absolute",
+          }}
+        />
         <div
           style={{
             color: "white",
@@ -154,11 +160,12 @@ app.frame("/stats", async (c) => {
             fontSize: 30,
             fontStyle: "normal",
             letterSpacing: "-0.025em",
-            lineHeight: 1.4,
+            lineHeight: 2,
             marginTop: 30,
             padding: "0 120px",
             whiteSpace: "pre-wrap",
             textAlign: "center",
+            backgroundColor: "black",
           }}
         >
           {totalSalesStat}
@@ -169,11 +176,12 @@ app.frame("/stats", async (c) => {
             fontSize: 30,
             fontStyle: "normal",
             letterSpacing: "-0.025em",
-            lineHeight: 1.4,
+            lineHeight: 2,
             marginTop: 30,
             padding: "0 120px",
             whiteSpace: "pre-wrap",
             textAlign: "center",
+            backgroundColor: "black",
           }}
         >
           {latestSaleStat}
@@ -184,11 +192,12 @@ app.frame("/stats", async (c) => {
             fontSize: 30,
             fontStyle: "normal",
             letterSpacing: "-0.025em",
-            lineHeight: 1.4,
+            lineHeight: 2,
             marginTop: 30,
             padding: "0 120px",
             whiteSpace: "pre-wrap",
             textAlign: "center",
+            backgroundColor: "black",
           }}
         >
           {currentBidStat}
@@ -199,11 +208,12 @@ app.frame("/stats", async (c) => {
             fontSize: 30,
             fontStyle: "normal",
             letterSpacing: "-0.025em",
-            lineHeight: 1.4,
+            lineHeight: 2,
             marginTop: 30,
             padding: "0 120px",
             whiteSpace: "pre-wrap",
             textAlign: "center",
+            backgroundColor: "black",
           }}
         >
           {bestBidderStat}
@@ -239,6 +249,12 @@ app.frame("/", async (c) => {
           width: "100%",
         }}
       >
+        <img
+          src={"/assets/degen-punks-image.png"}
+          style={{
+            position: "absolute",
+          }}
+        />
         <div
           style={{
             color: "white",
@@ -267,6 +283,7 @@ app.frame("/", async (c) => {
             padding: "0 120px",
             whiteSpace: "pre-wrap",
             textAlign: "center",
+            backgroundColor: "black",
           }}
         >
           {DESCRIPTION}
