@@ -22,7 +22,6 @@ const CONTRACT_ADDRESS = IS_TESTNETS
   ? "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9"
   : "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
-// Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN = IS_TESTNETS ? "eip155:666666666" : "eip155:666666666";
 
 const FRAME_LOGGING_ID = "degen-punks";
