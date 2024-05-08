@@ -26,7 +26,8 @@ const CHAIN = IS_TESTNETS ? "eip155:666666666" : "eip155:666666666";
 
 // UI
 const TITLE = "Degen Punk Bid";
-const DESCRIPTION = "Bid on a degen punk.";
+const DESCRIPTION =
+  "Degen punks are taking over the degen chain. View degen punk stats and place bids on degen punks.";
 
 const app = new Frog({
   assetsPath: "/",
@@ -202,23 +203,19 @@ app.frame("/stats", async (c) => {
     ),
     intents: [
       <TextInput placeholder="Enter a bid... (in DEGEN)" />,
-      <Button action="/bid">Bid</Button>,
+      <Button.Transaction target="/bid">Place Bid</Button.Transaction>,
       <Button action="/stats">Refresh Stats</Button>,
     ],
   });
 });
 
 app.frame("/", (c) => {
-  const { status } = c;
   return c.res({
     image: (
       <div
         style={{
           alignItems: "center",
-          background:
-            status === "response"
-              ? "linear-gradient(to right, #432889, #17101F)"
-              : "black",
+          background: "linear-gradient(to right, #432889, #17101F)",
           backgroundSize: "100% 100%",
           display: "flex",
           flexDirection: "column",
@@ -263,11 +260,7 @@ app.frame("/", (c) => {
         </div>
       </div>
     ),
-    intents: [
-      <TextInput placeholder="Enter a note... (max 33 chars)" />,
-      <Button.Transaction target="/mint">Mint</Button.Transaction>,
-      <Button action="/stats">Refresh Stats</Button>,
-    ],
+    intents: [<Button action="/stats">Enter</Button>],
   });
 });
 
