@@ -36,8 +36,14 @@ const app = new Frog({
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 });
 
-app.transaction("/bid", (c) => {
+app.transaction("/bid", async (c) => {
   const { inputText } = c;
+  let bidAmountString = inputText;
+  if (bidAmountString == null) {
+    const highestBid = await getBestBid();
+    // Increase highest bid by 1
+    bidAmountString = (+highestBid + 1).toString();
+  }
 
   // Contract transaction response.
   return c.contract({
@@ -46,7 +52,7 @@ app.transaction("/bid", (c) => {
     functionName: "placeBid",
     args: [],
     to: CONTRACT_ADDRESS,
-    value: parseEther(inputText as string),
+    value: parseEther(bidAmountString),
   });
 });
 
