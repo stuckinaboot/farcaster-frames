@@ -212,7 +212,8 @@ app.frame("/stats", async (c) => {
   });
 });
 
-app.frame("/", (c) => {
+app.frame("/", async (c) => {
+  await logEvent({ route: "root" }, FRAME_LOGGING_ID);
   return c.res({
     image: (
       <div
