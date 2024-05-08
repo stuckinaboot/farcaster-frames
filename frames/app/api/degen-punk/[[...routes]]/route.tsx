@@ -19,8 +19,8 @@ const client = createPublicClient({
 
 const IS_TESTNETS = false;
 const CONTRACT_ADDRESS = IS_TESTNETS
-  ? "0x5dDd8a93B92a2ee485588dECaAc397785d8a332b"
-  : "0x7F2bbaC3AA23165388301476Cf5944F541096cF6";
+  ? "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9"
+  : "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9";
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
 // Base: eip155:8453, Base Sepolia: "eip155:84532"
 const CHAIN = IS_TESTNETS ? "eip155:666666666" : "eip155:666666666";
