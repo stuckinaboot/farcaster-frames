@@ -33,7 +33,7 @@ const DESCRIPTION =
 
 const app = new Frog({
   assetsPath: "/",
-  basePath: "/api/degen-punk",
+  basePath: "/api/degen-punks",
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 });
