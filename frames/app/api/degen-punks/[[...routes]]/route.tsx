@@ -39,7 +39,10 @@ const app = new Frog({
 });
 
 app.transaction("/bid", async (c) => {
-  await logEvent({ route: "bid" }, FRAME_LOGGING_ID);
+  await logEvent(
+    { route: "bid", address: c.frameData?.address },
+    FRAME_LOGGING_ID
+  );
 
   const { inputText } = c;
   let bidAmountString = inputText;
@@ -96,7 +99,10 @@ async function getBestBidder() {
 }
 
 app.frame("/stats", async (c) => {
-  await logEvent({ route: "stats" }, FRAME_LOGGING_ID);
+  await logEvent(
+    { route: "stats", address: c.frameData?.address },
+    FRAME_LOGGING_ID
+  );
 
   const totalSales = await getTotalSales();
   const latestSalePrice = await getLatestPrice();
@@ -213,7 +219,10 @@ app.frame("/stats", async (c) => {
 });
 
 app.frame("/", async (c) => {
-  await logEvent({ route: "root" }, FRAME_LOGGING_ID);
+  await logEvent(
+    { route: "root", address: c.frameData?.address },
+    FRAME_LOGGING_ID
+  );
   return c.res({
     image: (
       <div
