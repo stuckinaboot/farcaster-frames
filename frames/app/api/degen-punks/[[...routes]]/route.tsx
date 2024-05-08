@@ -43,7 +43,7 @@ app.transaction("/bid", async (c) => {
 
   const { inputText } = c;
   let bidAmountString = inputText;
-  if (bidAmountString == null) {
+  if (!bidAmountString) {
     const highestBid = await getBestBid();
     // Increase highest bid by 1
     bidAmountString = (+highestBid + 1).toString();
