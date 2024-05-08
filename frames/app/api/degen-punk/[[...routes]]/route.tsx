@@ -25,7 +25,7 @@ const CONTRACT_ADDRESS = IS_TESTNETS
 const CHAIN = IS_TESTNETS ? "eip155:666666666" : "eip155:666666666";
 
 // UI
-const TITLE = "Degen Punk Bid";
+const TITLE = "Degen Punks";
 const DESCRIPTION =
   "Degen punks are taking over the degen chain. View degen punk stats and place bids on degen punks.";
 
@@ -43,8 +43,8 @@ app.transaction("/bid", (c) => {
   return c.contract({
     abi,
     chainId: CHAIN,
-    functionName: "mintPublic",
-    args: [inputText],
+    functionName: "placeBid",
+    args: [],
     to: CONTRACT_ADDRESS,
     value: parseEther(inputText as string),
   });
