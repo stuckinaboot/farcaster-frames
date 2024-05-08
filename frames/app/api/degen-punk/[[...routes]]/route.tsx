@@ -102,7 +102,7 @@ app.frame("/stats", async (c) => {
   const totalSalesStat = `Number of Sales: ${totalSales.toString()}`;
   const latestSaleStat = `Latest Sale Price: ${latestSalePrice.toString()} DEGEN`;
   const currentBidStat = `Current Bid: ${bestBidPrice.toString()} DEGEN`;
-  const bestBidderStat = `Best Bidder: ${bestBidder}`;
+  const bestBidderStat = `Highest Bidder: ${bestBidder}`;
 
   return c.res({
     image: (
