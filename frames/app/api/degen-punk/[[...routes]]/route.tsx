@@ -208,7 +208,7 @@ app.frame("/stats", async (c) => {
       </div>
     ),
     intents: [
-      <TextInput placeholder="Enter a bid... (in DEGEN)" />,
+      <TextInput placeholder="Enter bid in DEGEN (empty will use highest + 1)" />,
       <Button.Transaction target="/bid">Place Bid</Button.Transaction>,
       <Button action="/stats">Refresh Stats</Button>,
     ],
