@@ -13,16 +13,16 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.15",
-    "@reservoir0x/reservoir-sdk": "^2.1.2",
     "api": "^6.1.1",
     "cogo-toast": "^4.2.3",
     "copy-to-clipboard": "^3.3.3",
-    "frog": "latest",
+    "frog": "^0.9.2",
     "hono": "^4",
     "next": "14.1.0",
     "node-fetch": "^3.3.2",
     "react": "^18",
     "react-dom": "^18",
+    "truncate-eth-address": "^1.0.2",
     "viem": "^2.10.2"
   },
   "devDependencies": {
