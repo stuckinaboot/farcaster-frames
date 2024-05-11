@@ -1,6 +1,11 @@
 import fetch from "node-fetch";
 
+const DISABLE_LOGGING = true;
+
 export async function logEvent(event: any, frameCollectionId?: string) {
+  if (DISABLE_LOGGING) {
+    return;
+  }
   const payload = {
     api_key: process.env.GRAPHJSON_API_KEY,
     collection: frameCollectionId || "farcaster-frame-floor",
