@@ -17,7 +17,7 @@ const client = createPublicClient({
   transport: http(),
 });
 
-const CONTRACTS = [
+const CONTRACTS: { address: Address; name: string }[] = [
   { address: "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9", name: "floor" },
   { address: "0xdc9A711324a7e90426cB37a5C0359418A76C102f", name: "hat" },
   { address: "0x8593606796E2B58AF3A39e235C69f47399683b77", name: "eye" },
@@ -31,20 +31,26 @@ const CONTRACTS = [
 const CHAIN = "eip155:666666666";
 
 const FRAME_LOGGING_ID = "degen-punks";
+const NEXT_ARROW = "→";
+const PREV_ARROW = "←";
 
 // UI
-const TITLE = "Degen Punks";
+const TITLE = "Degen Punks - Pro Edition";
 const DESCRIPTION =
   "Degen punks are taking over the degen chain. View degen punk stats and place bids on degen punks.";
 
-const app = new Frog({
+type State = { contractIndex: number };
+
+const app = new Frog<{ State: State }>({
   assetsPath: "/",
-  basePath: "/api/degen-punks",
+  basePath: "/api/pro-degen-punks",
+  initialState: { contractIndex: 0 },
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 });
 
 app.transaction("/bid", async (c) => {
+  const contractIndexStr = c.req.query("contractIndex");
   await logEvent(
     { route: "bid", address: c.frameData?.address },
     FRAME_LOGGING_ID
@@ -53,7 +59,7 @@ app.transaction("/bid", async (c) => {
   const { inputText } = c;
   let bidAmountString = inputText;
   if (!bidAmountString) {
-    const highestBid = await getBestBid();
+    const highestBid = await getBestBid("todo" as any);
     // Increase highest bid by 1
     bidAmountString = (+highestBid + 1).toString();
   }
@@ -64,75 +70,120 @@ app.transaction("/bid", async (c) => {
     chainId: CHAIN,
     functionName: "placeBid",
     args: [],
-    to: CONTRACT_ADDRESS,
+    to: CONTRACTS[parseInt(contractIndexStr || "0")].address,
     value: parseEther(bidAmountString),
   });
 });
 
 async function getLatestPrice(contractAddress: Address) {
-  const data = await client.call({
-    to: contractAddress,
-    data: "0xa74a7b78",
-  });
-  const res = formatEther(BigInt(data.data as string));
-  return res;
+  try {
+    const data = await client.readContract({
+      address: contractAddress,
+      abi,
+      functionName: "lastSale",
+    });
+    const res = formatEther(BigInt(data as string));
+    return res;
+  } catch (e) {
+    return 0;
+  }
 }
 
 async function getTotalSales(contractAddress: Address) {
-  const data = await client.call({
-    to: contractAddress,
-    data: "0x80104403",
-  });
-  return parseInt(data.data as string, 16);
+  try {
+    const data = await client.readContract({
+      address: contractAddress,
+      abi,
+      functionName: "acceptedBidCount",
+    });
+    return parseInt(data as string, 16);
+  } catch (e) {
+    return 0;
+  }
 }
 
 async function getBestBid(contractAddress: Address) {
-  const data = await client.call({
-    to: contractAddress,
-    data: "0xd57bde79",
-  });
-  return formatEther(BigInt(data.data as string));
+  try {
+    const data = await client.readContract({
+      address: contractAddress,
+      abi,
+      functionName: "highestBid",
+    });
+    return formatEther(BigInt(data as string));
+  } catch (e) {
+    return 0;
+  }
 }
 
 async function getBestBidder(contractAddress: Address) {
-  const data = await client.call({
-    to: contractAddress,
-    data: "0x91f90157",
-  });
-  const address = "0x" + (data.data as string).substring(26);
-  const checkSummedAddress = getAddress(address);
-  return truncateEthAddress(checkSummedAddress);
+  try {
+    const data = (await client.readContract({
+      address: contractAddress,
+      abi,
+      functionName: "highestBidder",
+    })) as Address;
+    return truncateEthAddress(data);
+  } catch (e) {
+    return "None";
+  }
 }
 
 app.frame("/stats", async (c) => {
+  const { buttonValue, deriveState } = c;
+  const state = deriveState((previousState: State) => {
+    if (buttonValue === NEXT_ARROW) {
+      previousState.contractIndex++;
+      if (previousState.contractIndex >= CONTRACTS.length) {
+        previousState.contractIndex = 0;
+      }
+    }
+    if (buttonValue === PREV_ARROW) {
+      previousState.contractIndex--;
+      if (previousState.contractIndex < 0) {
+        previousState.contractIndex = CONTRACTS.length - 1;
+      }
+    }
+  });
+
   await logEvent(
     { route: "stats", address: c.frameData?.address },
     FRAME_LOGGING_ID
   );
 
-  const totalSales = await getTotalSales();
-  const latestSalePrice = await getLatestPrice();
-  const bestBidPrice = await getBestBid();
-  const bestBidder = await getBestBidder();
+  const contractToStats = await Promise.all(
+    CONTRACTS.map(async (contract) => {
+      const totalSales = await getTotalSales(contract.address);
+      const latestSalePrice = await getLatestPrice(contract.address);
+      const bestBidPrice = await getBestBid(contract.address);
+      const bestBidder = await getBestBidder(contract.address);
+      return {
+        contract,
+        stats: { totalSales, latestSalePrice, bestBidPrice, bestBidder },
+      };
+    })
+  );
 
-  const totalSalesStat = `Number of Sales: ${totalSales.toString()}`;
-  const latestSaleStat = `Latest Sale Price: ${latestSalePrice.toString()} DEGEN`;
-  const currentBidStat = `Current Bid: ${bestBidPrice.toString()} DEGEN`;
-  const bestBidderStat = `Highest Bidder: ${bestBidder}`;
+  const contractStatStrings = contractToStats.map(({ contract, stats }) => {
+    return `${
+      contract.name.substring(0, 1).toUpperCase() +
+      contract.name.substring(1).toLowerCase()
+    } | Top Bid: ${stats.bestBidPrice} DEGEN, ${
+      stats.bestBidder
+    } | Last Sale: ${stats.latestSalePrice} DEGEN | # Sales: ${
+      stats.totalSales
+    }`;
+  });
 
   return c.res({
     image: (
       <div
         style={{
           alignItems: "center",
-          background: "linear-gradient(to right, #432889, #17101F)",
           backgroundSize: "100% 100%",
           display: "flex",
           flexDirection: "column",
           flexWrap: "nowrap",
           height: "100%",
-          justifyContent: "center",
-          textAlign: "center",
           width: "100%",
           color: "white",
         }}
@@ -143,7 +194,7 @@ app.frame("/stats", async (c) => {
             position: "absolute",
           }}
         />
-        <div
+        {/* <div
           style={{
             color: "white",
             fontSize: 60,
@@ -158,78 +209,41 @@ app.frame("/stats", async (c) => {
           }}
         >
           {TITLE}
-        </div>
+        </div> */}
         <br />
-        <div
-          style={{
-            color: "white",
-            fontSize: 30,
-            fontStyle: "normal",
-            letterSpacing: "-0.025em",
-            lineHeight: 2,
-            marginTop: 30,
-            padding: "0 120px",
-            whiteSpace: "pre-wrap",
-            textAlign: "center",
-            backgroundColor: "black",
-          }}
-        >
-          {totalSalesStat}
-        </div>
-        <div
-          style={{
-            color: "white",
-            fontSize: 30,
-            fontStyle: "normal",
-            letterSpacing: "-0.025em",
-            lineHeight: 2,
-            marginTop: 30,
-            padding: "0 120px",
-            whiteSpace: "pre-wrap",
-            textAlign: "center",
-            backgroundColor: "black",
-          }}
-        >
-          {latestSaleStat}
-        </div>
-        <div
-          style={{
-            color: "white",
-            fontSize: 30,
-            fontStyle: "normal",
-            letterSpacing: "-0.025em",
-            lineHeight: 2,
-            marginTop: 30,
-            padding: "0 120px",
-            whiteSpace: "pre-wrap",
-            textAlign: "center",
-            backgroundColor: "black",
-          }}
-        >
-          {currentBidStat}
-        </div>
-        <div
-          style={{
-            color: "white",
-            fontSize: 30,
-            fontStyle: "normal",
-            letterSpacing: "-0.025em",
-            lineHeight: 2,
-            marginTop: 30,
-            padding: "0 120px",
-            whiteSpace: "pre-wrap",
-            textAlign: "center",
-            backgroundColor: "black",
-          }}
-        >
-          {bestBidderStat}
-        </div>
+        {contractStatStrings.map((str) => (
+          <div
+            style={{
+              color: "white",
+              fontSize: 30,
+              fontFamily: "Courier New, Courier, monospace",
+              letterSpacing: "-0.025em",
+              lineHeight: 2,
+              marginTop: 30,
+              padding: "0 10px",
+              whiteSpace: "pre-wrap",
+              textAlign: "left",
+              backgroundColor: "black",
+              width: "100%",
+            }}
+          >
+            {str}
+          </div>
+        ))}
       </div>
     ),
     intents: [
       <TextInput placeholder="Enter bid in DEGEN" />,
-      <Button.Transaction target="/bid">Place Bid</Button.Transaction>,
-      <Button action="/stats">Refresh Stats</Button>,
+      <Button.Transaction target="/bid">
+        {CONTRACTS[state.contractIndex].name} bid
+      </Button.Transaction>,
+      <Button action="/stats">Refresh</Button>,
+      <Button action="/stats" value={PREV_ARROW}>
+        {PREV_ARROW}
+      </Button>,
+      <Button action="/stats" value={NEXT_ARROW}>
+        {NEXT_ARROW}
+      </Button>,
     ],
   });
 });
@@ -296,7 +310,7 @@ app.frame("/", async (c) => {
         </div>
       </div>
     ),
-    intents: [<Button action="/stats">Enter</Button>],
+    intents: [<Button action="/stats?contractIndex=0">Enter</Button>],
   });
 });
 
