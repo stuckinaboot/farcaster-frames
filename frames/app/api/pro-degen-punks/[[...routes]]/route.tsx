@@ -50,7 +50,7 @@ const app = new Frog<{ State: State }>({
 });
 
 app.transaction("/bid", async (c) => {
-  const contractIndexStr = c.req.query("contractIndex");
+  const { buttonValue, previousState } = c;
   await logEvent(
     { route: "bid", address: c.frameData?.address },
     FRAME_LOGGING_ID
@@ -70,7 +70,7 @@ app.transaction("/bid", async (c) => {
     chainId: CHAIN,
     functionName: "placeBid",
     args: [],
-    to: CONTRACTS[parseInt(contractIndexStr || "0")].address,
+    to: CONTRACTS[previousState.contractIndex].address,
     value: parseEther(bidAmountString),
   });
 });
@@ -194,23 +194,6 @@ app.frame("/stats", async (c) => {
             position: "absolute",
           }}
         />
-        {/* <div
-          style={{
-            color: "white",
-            fontSize: 60,
-            fontStyle: "normal",
-            letterSpacing: "-0.025em",
-            lineHeight: 1.4,
-            marginTop: 30,
-            padding: "0 120px",
-            whiteSpace: "pre-wrap",
-            backgroundColor: "black",
-            textAlign: "center",
-          }}
-        >
-          {TITLE}
-        </div> */}
-        <br />
         {contractStatStrings.map((str) => (
           <div
             style={{
