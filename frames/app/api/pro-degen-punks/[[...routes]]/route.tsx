@@ -18,13 +18,13 @@ const client = createPublicClient({
 });
 
 const CONTRACTS: { address: Address; name: string }[] = [
-  { address: "0x7A1DBB83DbB1D4E3e692455533BA18F2Fdf19dc9", name: "floor" },
-  { address: "0xdc9A711324a7e90426cB37a5C0359418A76C102f", name: "hat" },
-  { address: "0x8593606796E2B58AF3A39e235C69f47399683b77", name: "eye" },
-  { address: "0xe53fE3c329Cef59EeC985BA2bf19a85A1a8b97cd", name: "hoodie" },
-  { address: "0xFB0564B26c45fb8aBb768F27ea3724EffE827207", name: "zombie" },
-  { address: "0x461b82a5EAA3a8ef31aB1B2c448a61Ac33C50F30", name: "ape" },
-  { address: "0x0d65e0ed1F1Db5DaB3fC126cF95600061E909FFD", name: "alien" },
+  { address: "0x5d2DE0ff02AAA0cce55Af669DF4b38c7dd437Dce", name: "floor" },
+  { address: "0x6FF7D9938E70F61e4B1B9b5D36a9cAc906129C66", name: "hoodie" },
+  { address: "0xFc4086744F5c72CeCd8139915ED3e68c54fA3b21", name: "zombie" },
+  { address: "0x442036ba5BD6364dE7813bC8480B299FcBeDf452", name: "ape" },
+  { address: "0xB11b81143F5D6a7Ebecf664967281cf348636f6e", name: "alien" },
+  { address: "0xf88C2F983e1a4C9A01671965d458799bbbe04352", name: "eyes" },
+  { address: "0xd61EA851119eb8312f8fA3455a3f41277f7A748C", name: "hat" },
 ];
 
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
