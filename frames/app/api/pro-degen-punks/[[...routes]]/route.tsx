@@ -19,12 +19,12 @@ const client = createPublicClient({
 
 const CONTRACTS: { address: Address; name: string }[] = [
   { address: "0x5d2DE0ff02AAA0cce55Af669DF4b38c7dd437Dce", name: "floor" },
+  { address: "0xf88C2F983e1a4C9A01671965d458799bbbe04352", name: "eyes" },
+  { address: "0xd61EA851119eb8312f8fA3455a3f41277f7A748C", name: "hat" },
   { address: "0x6FF7D9938E70F61e4B1B9b5D36a9cAc906129C66", name: "hoodie" },
   { address: "0xFc4086744F5c72CeCd8139915ED3e68c54fA3b21", name: "zombie" },
   { address: "0x442036ba5BD6364dE7813bC8480B299FcBeDf452", name: "ape" },
   { address: "0xB11b81143F5D6a7Ebecf664967281cf348636f6e", name: "alien" },
-  { address: "0xf88C2F983e1a4C9A01671965d458799bbbe04352", name: "eyes" },
-  { address: "0xd61EA851119eb8312f8fA3455a3f41277f7A748C", name: "hat" },
 ];
 
 // IDs https://docs.simplehash.com/reference/supported-chains-testnets
@@ -167,11 +167,9 @@ app.frame("/stats", async (c) => {
     return `${
       contract.name.substring(0, 1).toUpperCase() +
       contract.name.substring(1).toLowerCase()
-    } | Top Bid: ${stats.bestBidPrice} DEGEN, ${
-      stats.bestBidder
-    } | Last Sale: ${stats.latestSalePrice} DEGEN | # Sales: ${
-      stats.totalSales
-    }`;
+    } | Top Bid: ${stats.bestBidPrice}, ${stats.bestBidder} | Last Sale: ${
+      stats.latestSalePrice
+    } | # Sales: ${stats.totalSales}`;
   });
 
   return c.res({
@@ -186,19 +184,14 @@ app.frame("/stats", async (c) => {
           height: "100%",
           width: "100%",
           color: "white",
+          backgroundColor: "#8506FC",
         }}
       >
-        <img
-          src={"/assets/degen-punks-image.png"}
-          style={{
-            position: "absolute",
-          }}
-        />
         {contractStatStrings.map((str) => (
           <div
             style={{
               color: "white",
-              fontSize: 30,
+              fontSize: 34,
               fontFamily: "Courier New, Courier, monospace",
               letterSpacing: "-0.025em",
               lineHeight: 2,
