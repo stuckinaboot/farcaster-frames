@@ -5,8 +5,8 @@ import { devtools } from "frog/dev";
 import { handle } from "frog/next";
 import { serveStatic } from "frog/serve-static";
 import { Address, createPublicClient, http } from "viem";
-import { formatEther, getAddress } from "viem";
-import truncateEthAddress from "truncate-eth-address";
+import { formatEther } from "viem";
+import { truncate } from "truncate-ethereum-address";
 
 import { abi } from "./abi.ts";
 import { degen } from "viem/chains";
@@ -122,7 +122,7 @@ async function getBestBidder(contractAddress: Address) {
       abi,
       functionName: "highestBidder",
     })) as Address;
-    return truncateEthAddress(data);
+    return truncate(data, { nPrefix: 2, nSuffix: 4 });
   } catch (e) {
     return "None";
   }
@@ -185,6 +185,8 @@ app.frame("/stats", async (c) => {
           width: "100%",
           color: "white",
           backgroundColor: "#8506FC",
+          textAlign: "center",
+          justifyContent: "center",
         }}
       >
         {contractStatStrings.map((str) => (
@@ -196,9 +198,9 @@ app.frame("/stats", async (c) => {
               letterSpacing: "-0.025em",
               lineHeight: 2,
               marginTop: 30,
-              padding: "0 10px",
+              padding: "0 50px",
               whiteSpace: "pre-wrap",
-              textAlign: "left",
+              textAlign: "center",
               backgroundColor: "black",
               width: "100%",
             }}
