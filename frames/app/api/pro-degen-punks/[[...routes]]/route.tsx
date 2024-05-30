@@ -122,7 +122,11 @@ async function getBestBidder(contractAddress: Address) {
       abi,
       functionName: "highestBidder",
     })) as Address;
-    return truncate(data, { nPrefix: 2, nSuffix: 4 });
+    const truncated = truncate(data, { nPrefix: 2, nSuffix: 4 }).replaceAll(
+      "…",
+      ".."
+    );
+    return truncated;
   } catch (e) {
     return "None";
   }
