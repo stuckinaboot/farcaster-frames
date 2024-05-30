@@ -23,6 +23,7 @@
     "react": "^18",
     "react-dom": "^18",
     "truncate-eth-address": "^1.0.2",
+    "truncate-ethereum-address": "^0.3.0",
     "viem": "^2.10.2"
   },
   "devDependencies": {
