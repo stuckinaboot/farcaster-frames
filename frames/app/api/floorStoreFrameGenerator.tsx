@@ -274,6 +274,43 @@ export function generateFloorStoreApp(params: {
           >
             {title}
           </div>
+          <br />
+          <div
+            style={{
+              color: "white",
+              fontSize: 30,
+              fontStyle: "normal",
+              letterSpacing: "-0.025em",
+              lineHeight: 1.4,
+              marginTop: 30,
+              padding: "0 120px",
+              whiteSpace: "pre-wrap",
+              backgroundColor: params.noDescriptionBackgroundColor
+                ? ""
+                : "black",
+              textAlign: "center",
+            }}
+          >
+            Purchase the floor listing via frame
+          </div>
+          <br />
+          <div
+            style={{
+              color: "white",
+              fontSize: 30,
+              fontStyle: "normal",
+              letterSpacing: "-0.025em",
+              lineHeight: 1.4,
+              padding: "0 120px",
+              whiteSpace: "pre-wrap",
+              backgroundColor: params.noDescriptionBackgroundColor
+                ? ""
+                : "black",
+              textAlign: "center",
+            }}
+          >
+            (Powered by the OpenSea public API)
+          </div>
         </div>
       ),
       intents: [<Button>View floor NFT</Button>],
