@@ -25,6 +25,14 @@ const app = new Frog({
   basePath: "/api",
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
+  hub: {
+    apiUrl: "https://hubs.airstack.xyz",
+    fetchOptions: {
+      headers: {
+        "x-airstack-hubs": process.env.AIRSTACK_API_KEY as string,
+      },
+    },
+  },
 });
 
 app.transaction("/mint", (c) => {

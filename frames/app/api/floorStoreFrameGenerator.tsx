@@ -79,6 +79,14 @@ export function generateFloorStoreApp(params: {
     basePath: params.slug
       ? `/api/floor-store-${params.slug}`
       : "/api/floor-store",
+    hub: {
+      apiUrl: "https://hubs.airstack.xyz",
+      fetchOptions: {
+        headers: {
+          "x-airstack-hubs": process.env.AIRSTACK_API_KEY as string,
+        },
+      },
+    },
     // Supply a Hub to enable frame verification.
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
   });
