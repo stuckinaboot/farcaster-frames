@@ -26,6 +26,12 @@ const CHAIN_ID_TO_CHAIN_NAME: Record<ChainId, string> = {
   [ChainId.BASE_SEPOLIA]: "base_sepolia",
 };
 
+function getShareFrameButton({ name, slug }: { name: string; slug: string }) {
+  const coreText = `View and collect the floor ${name} NFT via frame`;
+  const href = `https://warpcast.com/~/compose?text=${coreText}&embeds[]=https://farcaster-frames-theta.vercel.app/api/floor-store/${slug}`;
+  return <Button.Link href={href}>Share</Button.Link>;
+}
+
 // UI
 
 async function getFloorListing(slug: string) {
@@ -313,7 +319,10 @@ export function generateFloorStoreApp(params: {
           </div>
         </div>
       ),
-      intents: [<Button>View floor NFT</Button>],
+      intents: [
+        <Button>View floor NFT</Button>,
+        getShareFrameButton({ name: collectionName, slug }),
+      ],
     });
   });
 
@@ -482,6 +491,7 @@ export function generateFloorStoreApp(params: {
         <Button.Transaction target={`/buy/${slug}`}>
           Buy now
         </Button.Transaction>,
+        getShareFrameButton({ name: collectionName, slug }),
       ],
     });
   });
