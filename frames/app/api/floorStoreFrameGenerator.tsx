@@ -79,14 +79,17 @@ export function generateFloorStoreApp(params: {
     basePath: params.slug
       ? `/api/floor-store-${params.slug}`
       : "/api/floor-store",
-    hub: {
-      apiUrl: "https://hubs.airstack.xyz",
-      fetchOptions: {
-        headers: {
-          "x-airstack-hubs": process.env.AIRSTACK_API_KEY as string,
-        },
-      },
-    },
+    hub:
+      process.env.NODE_ENV === "development"
+        ? undefined
+        : {
+            apiUrl: "https://hubs.airstack.xyz",
+            fetchOptions: {
+              headers: {
+                "x-airstack-hubs": process.env.AIRSTACK_API_KEY as string,
+              },
+            },
+          },
     // Supply a Hub to enable frame verification.
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
   });
@@ -144,6 +147,140 @@ export function generateFloorStoreApp(params: {
   });
 
   app.frame("/:slug", async (c) => {
+    const { status } = c;
+    const slug = slugFromPathOrConfig(c);
+    let collectionName;
+    let collectionImage;
+    if (params.collectionName) {
+      collectionName = params.collectionName;
+    }
+    if (!params.slug) {
+      try {
+        const collection = await getCollection(slug);
+        collectionName = collection.name;
+        collectionImage = collection.image_url;
+      } catch (e) {
+        await logEvent({
+          slug,
+          route: "index",
+          success: false,
+          error: (e as any)?.message,
+        });
+        return c.res({
+          image: (
+            <div
+              style={{
+                alignItems: "center",
+                background:
+                  status === "response"
+                    ? "linear-gradient(to right, #432889, #17101F)"
+                    : "black",
+                backgroundSize: "100% 100%",
+                display: "flex",
+                flexDirection: "column",
+                flexWrap: "nowrap",
+                height: "100%",
+                justifyContent: "center",
+                textAlign: "center",
+                width: "100%",
+              }}
+            >
+              <div
+                style={{
+                  color: "white",
+                  fontSize: 60,
+                  fontStyle: "normal",
+                  letterSpacing: "-0.025em",
+                  lineHeight: 1.4,
+                  marginTop: 30,
+                  padding: "0 120px",
+                  whiteSpace: "pre-wrap",
+                  backgroundColor: "black",
+                  textAlign: "center",
+                }}
+              >
+                No collection found
+              </div>
+            </div>
+          ),
+        });
+      }
+    }
+
+    const floorListing = await getFloorListing(slug);
+
+    const firstOfferItem = floorListing.protocol_data.parameters.offer[0];
+    const { token, identifierOrCriteria } = firstOfferItem;
+
+    const nft = await getNft({
+      chain: CHAIN_ID_TO_CHAIN_NAME[params.chainId],
+      address: token,
+      identifier: identifierOrCriteria,
+    });
+
+    let imgSrc: string = params.overrideImgSrc
+      ? params.overrideImgSrc
+      : nft?.image_url;
+    if (imgSrc?.toLowerCase().indexOf(".svg") !== -1) {
+      // SVG won't display properly so attempt to use collection image
+      imgSrc = collectionImage;
+    }
+
+    // NOTE: svg image urls don't seem to work properly
+
+    const title = `Floor Store: ${collectionName}`;
+
+    return c.res({
+      headers: { "cache-control": "max-age=15" },
+      action: `/${slug}/view`,
+      image: (
+        <div
+          style={{
+            alignItems: "center",
+            background:
+              status === "response"
+                ? "linear-gradient(to right, #432889, #17101F)"
+                : "black",
+            backgroundSize: "100% 100%",
+            display: "flex",
+            flexDirection: "column",
+            flexWrap: "nowrap",
+            height: "100%",
+            justifyContent: "center",
+            textAlign: "center",
+            width: "100%",
+          }}
+        >
+          <img
+            src={imgSrc}
+            style={{
+              position: "absolute",
+              width: 1600,
+            }}
+          />
+          <div
+            style={{
+              color: "white",
+              fontSize: 56,
+              fontStyle: "normal",
+              letterSpacing: "-0.025em",
+              lineHeight: 1.4,
+              marginTop: 30,
+              padding: "0 120px",
+              whiteSpace: "pre-wrap",
+              backgroundColor: "black",
+              textAlign: "center",
+            }}
+          >
+            {title}
+          </div>
+        </div>
+      ),
+      intents: [<Button>View floor NFT</Button>],
+    });
+  });
+
+  app.frame("/:slug/view", async (c) => {
     const { status } = c;
     const slug = slugFromPathOrConfig(c);
     let collectionName;
