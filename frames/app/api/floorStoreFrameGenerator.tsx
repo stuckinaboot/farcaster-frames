@@ -483,7 +483,7 @@ export function generateFloorStoreApp(params: {
           >
             {params.description != null
               ? params.description({ price: parsedPrice, currency })
-              : `Purchase via Frame\nPrice: ${parsedPrice} ${currency}`}
+              : `Purchase #${nft?.identifier} via Frame\nPrice: ${parsedPrice} ${currency}`}
           </div>
         </div>
       ),
